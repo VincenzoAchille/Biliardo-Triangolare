@@ -18,15 +18,14 @@ int main()
     ball::setr1(300);  //mettere dei controlli sui range di r1,r2,l devono dipendere dalle dimensioni della finestra
     ball::setr2(100);
     ball::setl(800);
-    float y0{200};
+    float y0{-200};
     float vx{2};
     float vy{3};
-    float theta{0};
+    float theta{1.2};
     float m = std::tan(theta);
     //float xu = (y0 - ball::getr1())/(0.5 * (ball::getr2() -ball::getr1()) -m); //da implementare per angoli negativi
     //float yu = m*xu + y0;
     //ball test(0.,y0,vy,vx,0);
-    std::cout << ball::getl()*m + y0 <<  "," << ball::getmGiac() << '\n';
     if(-ball::getr2() < ball::getl()*m + y0 &&  ball::getl()*m + y0 < ball::getr2()){
         std::cout << "no urti !" << '\n';
     }
@@ -51,10 +50,23 @@ int main()
     shape1.setFillColor(sf::Color::Cyan);
     
     //parte dinamica
+    //inizializzazione selection
     int t{0};
-    //urto
-    bool updown = sgn(b1.getY());
-    bool a = b1.selector(m, 1); //c'è qualcosa che non va con selector
+    //bool updown = sgn(b1.getY()); //c'è un bell'errore sui tipi
+    ball bParameters = b1; //mi serve il copy constuctor
+    bParameters.collision(m);
+    float dir = bParameters.getX() - b1.getX();
+    std::cout << b1.getX() << ", " << bParameters.getX() << '\n';
+    bool direction;
+    if(sgn(dir) < 0){
+        direction = 0;
+    }else{
+        direction = 1;
+    }
+    bool a = b1.selector(m, 1, direction); //c'è qualcosa che non va con selector
+    //std::cout << b1.getX() << ", " << b1.getY() << ", " << m*(-b1.getX())+b1.getY() << ", " << ball::getr1() << "," <<   '\n';
+
+
     if(a == 0){ 
        std::cout << "la pallina sta per fuggire!" << '\n';
        //la pallina evolve dinamicamente, e poi il programma si ferma
@@ -62,12 +74,11 @@ int main()
        pause();
     }
     else{
-        float m1 = m;
+        float m1 = m; 
         std::cout << "la pallina sta per urtare!" << '\n';
         //evolve: l'equazioni sono uguali sia per il primo che per il secondo
         //so gia che impatta. Quindi le coordinate dell'impatto saranno date aggiornando l'oggetto con collision.
-        ball bParameters = b1;
-        bParameters.collision(m);
+
         float impact[2] = {bParameters.getX(), bParameters.getY()}; // attenzione: devo passare by reference?
         //una prima versione mi calcola solo l'impatto
         //un altra aggiorna la ball
@@ -88,9 +99,15 @@ int main()
         window.draw(lowerBound, 2, sf::Lines);
         window.draw(shape1);
         window.display();
-        if((shape1.getPosition()).x == bParameters.getX() && (shape1.getPosition()).y == bParameters.getY()){
+        bool K = std::abs((shape1.getPosition()).x -center[0] - impact[0] )< 5.;
+        bool H = std::abs((shape1.getPosition()).y +center[1] -impact[1]) < 5.;
+        std::cout << -(shape1.getPosition()).y + center[1] << ", " << impact[1] << "," << H << ", "<<std::abs(-(shape1.getPosition()).y +center[1] -impact[1]) <<  '\n';
+        //scrivere la condizione in modo più semplice -> posso usare gli abs
+        //osservazione: se il programma funziona basta avere la condizione sulle x e non anche sulle y. E'un controllo ulteriore ma perdo potenza di calcolo. Cosa vuole Giacomo?
+        if(std::abs((shape1.getPosition()).x -center[0] - impact[0]) < 5. && (std::abs((-shape1.getPosition()).y +center[1] -impact[1]) < 5.)){
+            std::cout << "la pallina ha urtato!" << '\n';
             break;
-            std::cout << "break" << '\n';
+            
         }else{
             t++;
         }

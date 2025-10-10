@@ -76,23 +76,24 @@ void ball::collision(float m){
     }
 }
 
-bool ball::selector(float m, bool updown){ //mi deve dare 0 se la palla esce, 1 se la palla prosegue, probabilmente si può ottimizzare: fanno la stessa cosa, cmabia solo la guardia. Ci sono anche dei problemi con il Fist impact senza ciò
+bool ball::selector(float m, bool updown, bool direction){ //mi deve dare 0 se la palla esce, 1 se la palla prosegue, probabilmente si può ottimizzare: fanno la stessa cosa, cmabia solo la guardia. Ci sono anche dei problemi con il Fist impact senza ciò
     //se so da dove parte ho 2 possibili range, per updown maggiore di 0 urta contro la cosa alta
     float M;
-    if(x < 1e4){
+    if(x < 1e3){
         float M = m;
+        std::cout << "sono nel caso di FirstImpact" << '\n';
     }else{
         
         float M = postCollisionM(m);}
 
-    if(updown > 0){
-       if(M*(l-x)+y > -r2 && M*(l-x) + y < r2){
+    if(updown == 1){
+       if((M*(l-x)+y > -r2 && M*(l-x) + y < r2) && direction){   //queste sono verso dx
         return 0;
        }
-       if(M*(-x)+y > -r1 && M*(-x) + y < r1){
+       if((M*(-x)+y > -r1 && M*(-x) + y < r1) && !direction){     //queste sono verso sx
         return 0;
        }
-       if(M*(l-x)+y < -r2 || M*(-x)+y < - r1){
+       if(M*(l-x)+y < -r2 || M*(-x)+y < - r1){    //queste sono generiche
         std::cout << "errore: la pallina non rimbalza contro il muro" << '\n';
         return 0;
        }
@@ -100,11 +101,11 @@ bool ball::selector(float m, bool updown){ //mi deve dare 0 se la palla esce, 1 
         return 1;
     }
     }
-    if(updown < 0){
-        if(M*(l-x)+y > -r2 && M*(l-x)+y < r2){
+    if(updown == 0){
+        if((M*(l-x)+y > -r2 && M*(l-x)+y < r2) && direction){
             return 0;
         }
-        if(M*(-x)+y > -r1 && M*(-x)+y < r1){
+        if((M*(-x)+y > -r1 && M*(-x)+y < r1) && !direction){
         return 0;
         }
         if(M*(l-x)+y > r2 || M*(-x)+y > r1){

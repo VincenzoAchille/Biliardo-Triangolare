@@ -27,7 +27,7 @@ class ball{
     float postFirstCollisionM(float m);
     float postCollisionM(float m);
     float postCollisionAngle(float m);
-    bool selector(float m, bool a);
+    bool selector(float m, bool a, bool b);
     //setters
     static void setr1(float _r1) { r1 = _r1; }
     static void setr2(float _r2) { r2 = _r2; }
