@@ -27,31 +27,5 @@ inline void pause(){
     exit(1);
 }
 
-inline void Dynamics(ball b1, float m, float center[2], sf::Vertex upperBound[], sf::Vertex lowerBound[], sf::RenderWindow &window, float t){
-    
-    sf::CircleShape shape1(10.f);
-    shape1.setPosition(center[0] + b1.getX(),center[1] - b1.getY()); //da rivedere l'inizializzazione
-    shape1.setFillColor(sf::Color::Cyan);
 
-    while (window.isOpen())
-    {
-        sf::Event event;
-        while (window.pollEvent(event))
-        {
-            if (event.type == sf::Event::Closed)
-                window.close();
-        }
-        
-        //std::cout << a1.positionY(i, m) << ", " << a1.getX() << '\n';
-        shape1.setPosition(center[0] + b1.positionX(t), center[1]- b1.positionY(t, m)); // non chiarissimo cosa faccia l'equazione di Giacomini, forse conta gia y0
-        window.clear();
-        window.draw(upperBound, 2, sf::Lines); //preso da Chat
-        window.draw(lowerBound, 2, sf::Lines);
-        window.draw(shape1);
-        window.display();
-        t++;
-    }
-
-
-}
 #endif
