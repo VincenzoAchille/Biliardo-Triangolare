@@ -27,5 +27,13 @@ inline void pause(){
     exit(1);
 }
 
+inline bool invert(int a){
+    if(a > 0){
+        return 1;
+    }else{
+        return 0;
+    }
+}
+
 
 #endif

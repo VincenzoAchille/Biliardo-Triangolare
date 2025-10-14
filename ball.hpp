@@ -14,25 +14,28 @@ struct collisionBall{
 class ball{
     public:
     //costruttori
+    ball(float x, float y, float m,int direction);
     ball(float x, float y, float m);
     ball();
     //manca il costruttore copia
     //metodi
     void firstCollision(); //mi genera i primi xu e yu da cui derivo la prima equazione di giacomini
-    void nCollision(bool direction);
-    void collision(bool direction);
+    void nCollision();
+    void collision();
     void collisionParamters();
+    void updateDirection();
     bool direction(ball iniziale);
     float positionX(float t) {return t;}
     float positionY(float t) {return m*(t-x) + y;}
-    float postnCollisionM();
-    void postFirstCollisionM();
     void  postCollisionM(bool direction, int i);
-    float postCollisionAngle();
+    float angleRespectNormal();
     bool selector(bool a, bool b);
-
+    float normal();
+    float alfaMax();
     void endingDynamics(float center[2], sf::Vertex upperBound[], sf::Vertex lowerBound[], sf::RenderWindow &window, int &t, sf::CircleShape &shape1, ball &bParameters, bool direction);
     void collidingDynamics(float center[2], sf::Vertex upperBound[], sf::Vertex lowerBound[], sf::RenderWindow &window, int &t, sf::CircleShape &shape1, ball &bParameters, bool direction, int i);
+    void timeEvolving(float center[2], sf::Vertex upperBound[],sf::Vertex lowerBound[],sf::RenderWindow &window, int &t,sf::CircleShape &shape1);
+    void Dynamics(float center[], sf::Vertex upperBound[], sf::Vertex lowerBound[], sf::RenderWindow &window, int &t, sf::CircleShape &shape1);
     //setters
     static void setr1(float _r1) { r1 = _r1; }
     static void setr2(float _r2) { r2 = _r2; }
@@ -45,19 +48,22 @@ class ball{
     float getX() {return x;}
     float getY() {return y;}
     float getM() {return m;}
+    float getDirection() {return Direction;} //+-1
     
     //operazioni
     //distruttori
 
     private:
-    float x;
-    float y;
-    float m;
+    double x;
+    double y;
+    double m;
+    int Direction {1};
 
     static float l; //vanno inizializzati come puntatori?
     static float r1;
     static float r2;
     static float mGiac;
+    const float pi = 3.14;
 };
 
 #endif

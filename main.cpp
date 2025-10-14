@@ -11,16 +11,16 @@
 // osservazione: potrei creare un sistema con delle variabili generali r1,r2,l e poi tramite il polimorfismo dividerlo in 2 classi ball e grafica
 int main()
 {   
-    float center[2]{100, 450};
-    float alfa{2}; //è l'angolo delle rette
+    float center[2]{300, 450};
+    //float alfa{2}; //è l'angolo delle rette
     const float pi = 3.141592653589793;
     ball::setr1(200);  //mettere dei controlli sui range di r1,r2,l devono dipendere dalle dimensioni della finestra
-    ball::setr2(50);
-    ball::setl(1200);
-    float y0{-100};
+    ball::setr2(100);
+    ball::setl(1000);
+    float y0{100};
     float vx{2};
     float vy{3};
-    float theta{1};
+    float theta{-0.3};
     float m = std::tan(theta);
 
     if(-ball::getr2() < ball::getl()*m + y0 &&  ball::getl()*m + y0 < ball::getr2()){
@@ -54,28 +54,29 @@ while(i >= 0){
     std::cout << "x,y inizio segmento all'inizio di un ciclo while: " << b1.getX() << ", " << b1.getY() << '\n';
     //bool updown = sgn(b1.getY()); //c'è un bell'errore sui tipi
     ball bParameters = b1; //mi serve il copy constuctor
-    bool a = b1.selector(1,bParameters.direction(b1)); //1 se verso dx 0 se verso sx
-    bParameters.collision(a);
+    bool a = b1.selector(1,b1.getDirection()); //1 se verso dx 0 se verso sx
+    std::cout << "direzione all'inizio del ciclo while: " << a << '\n',
+    std::cout << "bParamters precollision: " << bParameters.getX() << ", " << bParameters.getY() << '\n';
+    bParameters.collision();  //per qualche motivo non aggiorn bParameters
+    std::cout << "bParameters PostCollision (x,y fine segmento all'inizio di un ciclo while): " << bParameters.getX() << ", " << bParameters.getY() << '\n';
     
     //std::cout << "end: " << bParameters.getX() << ", " << bParameters.getY() << ", " << bParameters.direction(b1) << ", " << b1.selector(1,bParameters.direction(b1)) << '\n';
-    
-    std::cout << "x,y inizio segmento prima del controllo di collision:" << b1.getX() << ", " << b1.getY() << '\n';
     //dynamics starting
     if(a == 0){ 
        std::cout << "la pallina sta per fuggire!" << '\n';
        //la pallina evolve dinamicamente, e poi il programma si ferma
-       b1.endingDynamics(center, upperBound, lowerBound, window,t,shape1,bParameters,bParameters.direction(b1));
+       b1.endingDynamics(center, upperBound, lowerBound, window,t,shape1,bParameters,b1.getDirection());
     }
     else{
         //std::cout << "la pallina sta per urtare!" << '\n';
         //evolve: l'equazioni sono uguali sia per il primo che per il secondo
         //so gia che impatta. Quindi le coordinate dell'impatto saranno date aggiornando l'oggetto con collision.
-        b1.collidingDynamics(center, upperBound, lowerBound, window,t,shape1,bParameters,bParameters.direction(b1), i);
+        b1.collidingDynamics(center, upperBound, lowerBound, window,t,shape1,bParameters,b1.getDirection(), i);
         //se coincidono break, aggiorna ball e riparte il ciclo (devo implementare un aggiornamento di m)
     }
     std::cout << "valore di controllo = " << i << '\n';
     i++;
-    if(i > 10){
+    if(i > 8){
         pause();
     }
 }
@@ -92,8 +93,7 @@ while(i >= 0){
 
     
 }
-    
-    //secondo urto
+
 
         
 
