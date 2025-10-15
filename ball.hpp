@@ -27,11 +27,14 @@ class ball{
     bool direction(ball iniziale);
     float positionX(float t) {return t;}
     float positionY(float t) {return m*(t-x) + y;}
-    void  postCollisionM(bool direction, int i);
+    void  updateM();
     float angleRespectNormal();
     bool selector(bool a, bool b);
     float normal();
+    float normal(int direction, bool updown);
     float alfaMax();
+    bool updown(int direction);
+    float newM(int direction, bool updown);
     void endingDynamics(float center[2], sf::Vertex upperBound[], sf::Vertex lowerBound[], sf::RenderWindow &window, int &t, sf::CircleShape &shape1, ball &bParameters, bool direction);
     void collidingDynamics(float center[2], sf::Vertex upperBound[], sf::Vertex lowerBound[], sf::RenderWindow &window, int &t, sf::CircleShape &shape1, ball &bParameters, bool direction, int i);
     void timeEvolving(float center[2], sf::Vertex upperBound[],sf::Vertex lowerBound[],sf::RenderWindow &window, int &t,sf::CircleShape &shape1);
@@ -44,7 +47,7 @@ class ball{
     static float getr1() { return r1;}
     static float getr2() { return r2; }
     static float getl() { return l;}
-    static float getmGiac() {return l/(r2 - r1);}
+    static float mGiac() {return std::abs(l/(r2 - r1));}
     float getX() {return x;}
     float getY() {return y;}
     float getM() {return m;}
@@ -62,7 +65,6 @@ class ball{
     static float l; //vanno inizializzati come puntatori?
     static float r1;
     static float r2;
-    static float mGiac;
     const float pi = 3.14;
 };
 

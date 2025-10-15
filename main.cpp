@@ -20,7 +20,7 @@ int main()
     float y0{100};
     float vx{2};
     float vy{3};
-    float theta{-0.3};
+    float theta{1.2};
     float m = std::tan(theta);
 
     if(-ball::getr2() < ball::getl()*m + y0 &&  ball::getl()*m + y0 < ball::getr2()){
@@ -51,33 +51,22 @@ int main()
     int i{0};
 
 while(i >= 0){
-    std::cout << "x,y inizio segmento all'inizio di un ciclo while: " << b1.getX() << ", " << b1.getY() << '\n';
-    //bool updown = sgn(b1.getY()); //c'è un bell'errore sui tipi
+    std::cout << "parametri all'inizio di un while" " x=" << b1.getX() << " y=" << b1.getY() << " m=" << b1.getM() << " direction= " << b1.getDirection() << '\n';
     ball bParameters = b1; //mi serve il copy constuctor
-    bool a = b1.selector(1,b1.getDirection()); //1 se verso dx 0 se verso sx
-    std::cout << "direzione all'inizio del ciclo while: " << a << '\n',
-    std::cout << "bParamters precollision: " << bParameters.getX() << ", " << bParameters.getY() << '\n';
-    bParameters.collision();  //per qualche motivo non aggiorn bParameters
-    std::cout << "bParameters PostCollision (x,y fine segmento all'inizio di un ciclo while): " << bParameters.getX() << ", " << bParameters.getY() << '\n';
+    bool a = b1.selector(1,b1.getDirection()); 
+    bParameters.collision();  
     
-    //std::cout << "end: " << bParameters.getX() << ", " << bParameters.getY() << ", " << bParameters.direction(b1) << ", " << b1.selector(1,bParameters.direction(b1)) << '\n';
     //dynamics starting
     if(a == 0){ 
-       std::cout << "la pallina sta per fuggire!" << '\n';
-       //la pallina evolve dinamicamente, e poi il programma si ferma
        b1.endingDynamics(center, upperBound, lowerBound, window,t,shape1,bParameters,b1.getDirection());
     }
     else{
-        //std::cout << "la pallina sta per urtare!" << '\n';
-        //evolve: l'equazioni sono uguali sia per il primo che per il secondo
-        //so gia che impatta. Quindi le coordinate dell'impatto saranno date aggiornando l'oggetto con collision.
         b1.collidingDynamics(center, upperBound, lowerBound, window,t,shape1,bParameters,b1.getDirection(), i);
-        //se coincidono break, aggiorna ball e riparte il ciclo (devo implementare un aggiornamento di m)
     }
     std::cout << "valore di controllo = " << i << '\n';
     i++;
     if(i > 8){
-        pause();
+        myPause();
     }
 }
 
