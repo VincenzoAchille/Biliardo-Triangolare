@@ -1,0 +1,17 @@
+[
+{
+  "directory": "/home/vincenzo03/FinalProject/build",
+  "command": "/usr/bin/g++  -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Wshadow -Wimplicit-fallthrough -Wextra-semi -Wold-style-cast -fno-omit-frame-pointer -D_GLIBCXX_ASSERTIONS -D_GLIBCXX_SANITIZE_STD_ALLOCATOR -g -fsanitize=address,undefined -std=c++20 -o CMakeFiles/biliardo_triangolare.dir/main.cpp.o -c /home/vincenzo03/FinalProject/main.cpp",
+  "file": "/home/vincenzo03/FinalProject/main.cpp"
+},
+{
+  "directory": "/home/vincenzo03/FinalProject/build",
+  "command": "/usr/bin/g++  -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Wshadow -Wimplicit-fallthrough -Wextra-semi -Wold-style-cast -fno-omit-frame-pointer -D_GLIBCXX_ASSERTIONS -D_GLIBCXX_SANITIZE_STD_ALLOCATOR -g -fsanitize=address,undefined -std=c++20 -o CMakeFiles/biliardo_triangolare.dir/Methods.cpp.o -c /home/vincenzo03/FinalProject/Methods.cpp",
+  "file": "/home/vincenzo03/FinalProject/Methods.cpp"
+},
+{
+  "directory": "/home/vincenzo03/FinalProject/build",
+  "command": "/usr/bin/g++  -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Wshadow -Wimplicit-fallthrough -Wextra-semi -Wold-style-cast -fno-omit-frame-pointer -D_GLIBCXX_ASSERTIONS -D_GLIBCXX_SANITIZE_STD_ALLOCATOR -g -fsanitize=address,undefined -std=c++20 -o CMakeFiles/biliardo_triangolare.dir/ball.cpp.o -c /home/vincenzo03/FinalProject/ball.cpp",
+  "file": "/home/vincenzo03/FinalProject/ball.cpp"
+}
+]

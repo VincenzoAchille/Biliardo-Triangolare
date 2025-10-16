@@ -15,12 +15,12 @@ int main()
     //float alfa{2}; //è l'angolo delle rette
     const float pi = 3.141592653589793;
     ball::setr1(200);  //mettere dei controlli sui range di r1,r2,l devono dipendere dalle dimensioni della finestra
-    ball::setr2(100);
+    ball::setr2(180);
     ball::setl(1000);
-    float y0{100};
+    float y0{14};
     float vx{2};
     float vy{3};
-    float theta{1.2};
+    float theta{0.5};
     float m = std::tan(theta);
 
     if(-ball::getr2() < ball::getl()*m + y0 &&  ball::getl()*m + y0 < ball::getr2()){
@@ -37,31 +37,34 @@ int main()
         sf::Vertex(sf::Vector2f(center[0], center[1] + ball::getr1()), sf::Color::Red),
         sf::Vertex(sf::Vector2f(center[0] + ball::getl(), center[1] + ball::getr2()), sf::Color::Red)
     };
-    sf::RenderWindow window(sf::VideoMode(1600, 900), "Triangular Billiards"); //aggiustare l'inizializzazione
+    sf::RenderWindow window(sf::VideoMode(1600, 900), "Biliardo Triangolare"); //aggiustare l'inizializzazione
 
     //inizializzazione ball e shape
     ball b1(0, y0, m);
     sf::CircleShape shape1(10.f);
     shape1.setPosition(center[0],center[1] - y0);
     shape1.setFillColor(sf::Color::Cyan);
+    //shape1.setPosition(center[0] + x, center[1] - y);
     
     //parte dinamica
     
-    int t{0};
+    float t{0};
     int i{0};
-
+    float h{0};
+    float T{0};
 while(i >= 0){
-    std::cout << "parametri all'inizio di un while" " x=" << b1.getX() << " y=" << b1.getY() << " m=" << b1.getM() << " direction= " << b1.getDirection() << '\n';
+    std::cout << "parametri b1 all'inizio di un while" " x=" << b1.getX() << " y=" << b1.getY() << " m=" << b1.getM() << " direction= " << b1.getDirection() << '\n';
     ball bParameters = b1; //mi serve il copy constuctor
-    bool a = b1.selector(1,b1.getDirection()); 
+    bool a = b1.selector(); 
     bParameters.collision();  
-    
+    bParameters.updateM();
+    std::cout << "parametri bParameters inizio di un while" " x=" << b1.getX() << " y=" << b1.getY() << "mUpdate= " << bParameters.getM() << '\n';
     //dynamics starting
     if(a == 0){ 
-       b1.endingDynamics(center, upperBound, lowerBound, window,t,shape1,bParameters,b1.getDirection());
+       b1.endingDynamics(center, upperBound, lowerBound, window,t,shape1,bParameters,b1.getDirection(),h,T);
     }
     else{
-        b1.collidingDynamics(center, upperBound, lowerBound, window,t,shape1,bParameters,b1.getDirection(), i);
+        b1.collidingDynamics(center, upperBound, lowerBound, window,t,shape1,bParameters,b1.getDirection(), i,h,T);
     }
     std::cout << "valore di controllo = " << i << '\n';
     i++;

@@ -3,6 +3,7 @@
 
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
+#include <iostream>
 
 
 struct collisionBall{
@@ -26,17 +27,16 @@ class ball{
     void updateDirection();
     bool direction(ball iniziale);
     float positionX(float t) {return t;}
-    float positionY(float t) {return m*(t-x) + y;}
+    float positionY(float t) {
+        return m*(t-x) + y;}
     void  updateM();
     float angleRespectNormal();
-    bool selector(bool a, bool b);
+    bool selector();
     float normal();
-    float normal(int direction, bool updown);
     float alfaMax();
-    bool updown(int direction);
-    float newM(int direction, bool updown);
-    void endingDynamics(float center[2], sf::Vertex upperBound[], sf::Vertex lowerBound[], sf::RenderWindow &window, int &t, sf::CircleShape &shape1, ball &bParameters, bool direction);
-    void collidingDynamics(float center[2], sf::Vertex upperBound[], sf::Vertex lowerBound[], sf::RenderWindow &window, int &t, sf::CircleShape &shape1, ball &bParameters, bool direction, int i);
+    bool updown();
+    void endingDynamics(float center[2], sf::Vertex upperBound[], sf::Vertex lowerBound[], sf::RenderWindow &window, float &t, sf::CircleShape &shape1, ball &bParameters, bool direction, float &h, float &T);
+    void collidingDynamics(float center[2], sf::Vertex upperBound[], sf::Vertex lowerBound[], sf::RenderWindow &window, float &t, sf::CircleShape &shape1, ball &bParameters, bool direction, int i,float &h, float &T);
     void timeEvolving(float center[2], sf::Vertex upperBound[],sf::Vertex lowerBound[],sf::RenderWindow &window, int &t,sf::CircleShape &shape1);
     void Dynamics(float center[], sf::Vertex upperBound[], sf::Vertex lowerBound[], sf::RenderWindow &window, int &t, sf::CircleShape &shape1);
     //setters
