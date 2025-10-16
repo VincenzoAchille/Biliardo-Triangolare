@@ -8,40 +8,13 @@
 #include <SFML/Graphics.hpp>
 const float pi = 3.141592653589793;
 
-inline bool controlAngle(float angle, float a, float b){
-    if(a < angle < b){
-        return 0;
-        std::cout << "angolo fuori dal range" << '\n';
+inline bool rangeValidity(float value, float a, float b){
+    if(a > value || value > b){
+        std::cout << "Errore: valorre fuori dal range" << '\n';
         exit(1);
-    }else{
-        return 1;
-    }
+}
 }
 
-inline void evaluate(float A, int &Direction) {
-
-    
-    if (A > 0 && A < M_PI/2) {
-        // Primo quadrante: 0°-90°
-        Direction = 1;
-        
-    }
-    else if (A > M_PI/2 && A <= M_PI) {
-        // Secondo quadrante: 90°-180°
-        Direction = -1;
-        
-    }
-    else if (A < 0 && A >= -M_PI/2) {
-        // Quarto quadrante: -90°-0°
-        Direction = 1;
-       
-    }
-    else if (A < -M_PI/2 && A >= -M_PI) {
-        // Terzo quadrante: -180° - -90°
-        Direction = -1;
-       
-    }
-}
 inline int sgn(float x) {
 return (x > 0) - (x < 0);
 }

@@ -5,7 +5,7 @@
 #include <SFML/Graphics.hpp>
 
 float ball::l = 1.; 
-float ball::r1 = 0.5;
+float ball::r1 = 1.;
 float ball::r2 = 1.;
 
 ball::ball(float _x, float _y, float _m, int _direction){
@@ -35,32 +35,8 @@ void ball::updateDirection(){
         if(alfaMax() - angle < 0.){
             Direction = Direction;
         }
-       /*int pos = 10;
-       int neg = -10;
-       bool a = updown();
-       if(a == 1){  //questa versione la chiamo dopo updateXY e updateM
-         float A = m*pos;
-         if(A < 0){
-            Direction = 1;
-         }else{
-            Direction = -1;
-         }
-
-
-       }else if(a == 0){
-        float A = m*pos;
-         if(A > 0){
-            Direction = 1;
-         }else{
-            Direction = -1;
-         }
-
-       }else{
-        std::cout << "errore su updown" << '\n';
-       }*/
-    
 }
-bool ball::updown(){
+bool ball::updown(){      //manca il caso m = 0, complica molto le cose
     if(m*Direction == 0){
         return 0;
     }
@@ -82,9 +58,6 @@ float ball::normal(){
     }
 }
     void ball::updateM() {
-    std::cout << "Entrato in updateM\n";
-    //std::cout << "m in entrata=" << m << "\n";
-
     float N = normal();
     float mAngle = std::tan(angleRespectNormal());
     int a = 1;
@@ -96,23 +69,22 @@ float ball::normal(){
     }else{
         m = newM;
     }
-    //std::cout << "m in uscita: " << m << '\n';
+
 
     
 }
 
 
-float ball::angleRespectNormal(){ //vuole N0 e m0
-
+float ball::angleRespectNormal(){ 
     float N = normal();
     float M  = m;
-    float b = std::abs(std::atan((M-N)/(1+M*N))); // con questo valore assoulto ottengo sempre l'angolo acuto
+    float b = std::abs(std::atan((M-N)/(1+M*N))); 
     return b;
-    //return 180 * b/pi;
+
  
 }
 
-void ball::nCollision(){    
+void ball::nUpdateXY(){    
     if(normal() >= 0){                     
         double xu = x;  
         x = (r1-y+m*x)/(m-(r2-r1)/l);
@@ -127,7 +99,7 @@ void ball::nCollision(){
     }
 
 }
-void ball::firstCollision(){ 
+void ball::firstUpdateXY(){ 
         if(m >= 0.){                           
             x = (y - r1)/((r2-r1)/l -m);
             y = m*x + y;
@@ -139,13 +111,11 @@ void ball::firstCollision(){
         }
     }
 
-void ball::collision(){
+void ball::updateXY(){     //qui mi serve un controllo un filo più forte sul first
     if(std::abs(x) < 1e-2){
-        firstCollision();
-        std::cout << "chiamata collision: firstCollision" << '\n';
+        firstUpdateXY();
     }else{
-        nCollision();
-        std::cout << "chiamata collision: nCollision" << '\n';
+        nUpdateXY();
     }
 }
 
@@ -153,35 +123,18 @@ void ball::collision(){
 
 
 
-    bool ball::selector() { 
-    std::cout << "\n=== Entrata in selector ===\n";
-    if (updown() == 1) {
-        //std::cout << "→ Entrato in ramo updown == 1\n";
+    bool ball::selector() 
+    { 
 
-        if ((m * (l - x) + y > -r2 && m * (l - x) + y < r2) && invert(Direction)) {
-            //std::cout << "trigger dx (updown==1)\n";
+
+        {if ((m * (l - x) + y > -r2 && m * (l - x) + y < r2) && invert(Direction)) {
+  
             return 0;
         }
         if ((m * (-x) + y > -r1 && m * (-x) + y < r1) && !invert(Direction)) {
-            //std::cout << "trigger sx (updown==1)\n";
+         
             return 0;
         }
-        return 1;
-    }
-    if (updown() == 0) {
-        //std::cout << "→ Entrato in ramo updown == 0\n";
-
-        if ((m * (l - x) + y > -r2 && m * (l - x) + y < r2) && invert(Direction)) {
-            //std::cout << "trigger dx (updown==0)\n";
-            return 0;
-        }
-
-        if ((m * (-x) + y > -r1 && m * (-x) + y < r1) && !invert(Direction)) {
-            //std::cout << "trigger sx (updown==0)\n";
-            return 0;
-        }
-
-        //std::cout << "selector: return 1\n";
         return 1;
     }
 
@@ -208,13 +161,28 @@ void ball::timeEvolving(float center[], sf::Vertex upperBound[],sf::Vertex lower
         window.display();
 }
 }
+void ball::update(float collisionX, float collisionY){
+    ball helpDir(x, y, m, Direction);
+    ball helpM(x, y, m, Direction);
+    helpM.updateM();
+    helpDir.updateDirection();
+    x = collisionX;
+    y = collisionY;
+    m = helpM.getM();
+    Direction = helpDir.getDirection();
 
-void ball::endingDynamics(float center[], sf::Vertex upperBound[], sf::Vertex lowerBound[], sf::RenderWindow &window, float &t, sf::CircleShape &shape1, ball &bParameters,
-     bool direction, float &h, float &T){
+
+}
+void ball::endingDynamics(float center[], sf::Vertex upperBound[], sf::Vertex lowerBound[], sf::RenderWindow &window, float &t, sf::CircleShape &shape1,
+    float &h, float &T, float v){
     std::cout << "endingDynamics" << '\n';
-    //shape1.setPosition(center[0] + x,center[1] - y); 
-    shape1.setFillColor(sf::Color::Cyan);
-    float impact[2] = {bParameters.getX(), bParameters.getY()};
+
+    ball toUpdate(x,y,m,Direction);
+    toUpdate.updateXY();
+    float impactX = toUpdate.getX();
+    float impactY = toUpdate.getY();
+
+    float impact[2] = {impactX, impactY};
     std::cout << "x,y fine segmento all'inizio di endingDynamics" << impact[0] << ", " << impact[1] << '\n';
     
     
@@ -238,7 +206,7 @@ void ball::endingDynamics(float center[], sf::Vertex upperBound[], sf::Vertex lo
         }
         
         float scale = 1.0f / std::sqrt(1 + m*m);
-        float effective_t = h; //per il momento senza scale
+        float effective_t = h*v; //per il momento senza scale
           std::cout << h << ",  " << T << ",  "<< t << '\n';
           //std::cout << "parametri pre-grafica:" << x << ", " << y << ", " << m << ", " << Direction << '\n';
         shape1.setPosition(center[0] + positionX(effective_t), center[1]- positionY(effective_t)); 
@@ -269,15 +237,17 @@ void ball::endingDynamics(float center[], sf::Vertex upperBound[], sf::Vertex lo
 
     void ball::collidingDynamics(float center[], sf::Vertex upperBound[], sf::Vertex lowerBound[], 
                            sf::RenderWindow &window, float &t, sf::CircleShape &shape1, 
-                           ball &bParameters, bool direction, int i, float &h, float &T)
+                           float &h, float &T, float v)
 {  
     std::cout << "collidingDynamics" << '\n';
-    //std::cout << "il valore di mGiac è: " << mGiac << '\n';
-    //std::cout << "parametri all'inizio di collidingDynamics: x= " << x << " y=" << y << " direction=" << Direction << '\n';
+
+    ball toUpdate(x,y,m,Direction);
+    toUpdate.updateXY();
+    float impactX = toUpdate.getX();
+    float impactY = toUpdate.getY();
     
-    float impact[2] = {bParameters.getX(), bParameters.getY()}; 
-    //shape1.setPosition(center[0] + x, center[1] - y);
     
+    float impact[2] = {impactX, impactY}; 
   
     if(Direction < 0) { 
         std::cout << "chiamato Direction < 0 in dynamics" << '\n';
@@ -304,16 +274,11 @@ void ball::endingDynamics(float center[], sf::Vertex upperBound[], sf::Vertex lo
             
         }
         
-        double scale = 1.0f / std::sqrt(1 + m*m);
-        //std::cout << "scale iniziale: " << scale << '\n';
-        double effective_t = h;
-        //std::cout << "parametri pre-grafica:" << x << ", " << y << ", " << m << ", " << Direction << '\n';
+        double scale = 1./ std::sqrt(1 + m*m);
+        double effective_t = h*v;
         float newX = positionX(effective_t);
         float newY = positionY(effective_t);
-        //std::cout << h << ",  " << T << ",  "<< t << '\n';
-        
         shape1.setPosition(center[0] + newX, center[1] - newY); 
-        //std::cout << "parametri grafici: " << positionX(effective_t) <<  ", " << positionY(effective_t) << '\n';
         window.clear();
         window.draw(upperBound, 2, sf::Lines); 
         window.draw(lowerBound, 2, sf::Lines);
@@ -326,30 +291,7 @@ void ball::endingDynamics(float center[], sf::Vertex upperBound[], sf::Vertex lo
             float collisionX = newX;
             float collisionY = newY;
             
-            //ball helpXY(x, y, m, Direction);  // Usa la posizione di collisione
-            ball helpDir(x, y, m, Direction);
-            ball helpM(x, y, m, Direction);
-            //std::cout << "M in colliding Dynamics pre update:" << m << ", " << helpM.getM() << '\n';  
-            helpM.updateM();
-            //std::cout << "M in colliding Dynamics post update:" << helpM.getM() << '\n';  
-            helpDir.updateDirection();
-            //helpXY.collision();
-            /*if(std::abs(helpXY.y - collisionY) < 15.){
-                std::cout << "miglioramento precisione: " << std::abs(helpXY.y - collisionY)<< "help:" <<  helpXY.getY() << "positionY: " << collisionY << '\n';
-            }else{
-                std::cout << "precisione non migliorata" << std::abs(helpXY.y - collisionY)  << "help:" <<  helpXY.getY() << "positionY: " << collisionY << '\n';
-            }*/
-
-;
-            //std::cout << "parametri di collisione catturati da helpXY: " << helpXY.getX() << ", " << helpXY.getY() <<'\n';
-            x = collisionX;
-            y = collisionY;
-            m = helpM.getM();
-            Direction = helpDir.getDirection();
-            float scale2 = 1.0f / std::sqrt(1 + m*m);
-
-            //std::cout << "scale updated: " << scale2 << '\n';
-            
+           update(collisionX, collisionY);
             
             std::cout << "parametri alla fine di collidingDynamics: " << x << ", " << y << ", " << m << ", " << Direction << '\n';
             break;

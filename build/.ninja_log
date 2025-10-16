@@ -1,9 +1,5 @@
 # ninja log v5
 0	1810	1760534197166814755	CMakeFiles/biliardo_triangolare.dir/Methods.cpp.o	22bef2875b39617b
 0	1964	1760534197318814741	CMakeFiles/biliardo_triangolare.dir/main.cpp.o	c218e8f71e5c3d5e
-1	2140	1760534197494814725	CMakeFiles/biliardo_triangolare.dir/ball.cpp.o	cf3ad144b0b29d03
-2141	2506	1760534197862814691	biliardo_triangolare	a92b35a57cc1f276
-0	1270	1760535132982709867	CMakeFiles/biliardo_triangolare.dir/ball.cpp.o	cf3ad144b0b29d03
-1270	1493	1760535133202709853	biliardo_triangolare	a92b35a57cc1f276
 1	1086	1760535855346616909	CMakeFiles/biliardo_triangolare.dir/ball.cpp.o	cf3ad144b0b29d03
 1086	1257	1760535855518616888	biliardo_triangolare	a92b35a57cc1f276

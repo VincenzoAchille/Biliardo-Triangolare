@@ -5,13 +5,6 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
-
-struct collisionBall{
-    float x_o;
-    float y_o;
-    bool collide; //1 collide, 0 no
-};
-
 class ball{
     public:
     //costruttori
@@ -19,26 +12,26 @@ class ball{
     ball(float x, float y, float m);
     ball();
     //manca il costruttore copia
+    ball(const ball& b) : x(b.x), y(b.y), m(b.m), Direction(b.Direction) {}
     //metodi
-    void firstCollision(); //mi genera i primi xu e yu da cui derivo la prima equazione di giacomini
-    void nCollision();
-    void collision();
-    void collisionParamters();
+    void firstUpdateXY(); //mi genera i primi xu e yu da cui derivo la prima equazione di giacomini
+    void nUpdateXY();
+    void updateXY();
     void updateDirection();
-    bool direction(ball iniziale);
     float positionX(float t) {return t;}
-    float positionY(float t) {
-        return m*(t-x) + y;}
-    void  updateM();
+    float positionY(float t) {return m*(t-x) + y;}
+    void update(float collisionX, float collisionY);
+    void updateM();
     float angleRespectNormal();
     bool selector();
     float normal();
     float alfaMax();
     bool updown();
-    void endingDynamics(float center[2], sf::Vertex upperBound[], sf::Vertex lowerBound[], sf::RenderWindow &window, float &t, sf::CircleShape &shape1, ball &bParameters, bool direction, float &h, float &T);
-    void collidingDynamics(float center[2], sf::Vertex upperBound[], sf::Vertex lowerBound[], sf::RenderWindow &window, float &t, sf::CircleShape &shape1, ball &bParameters, bool direction, int i,float &h, float &T);
+    void endingDynamics(float center[2], sf::Vertex upperBound[], sf::Vertex lowerBound[], sf::RenderWindow &window, float &t, sf::CircleShape &shape1, 
+        float &h, float &T, float v);
+    void collidingDynamics(float center[2], sf::Vertex upperBound[], sf::Vertex lowerBound[], sf::RenderWindow &window, float &t, sf::CircleShape &shape1, 
+        float &h, float &T, float v);
     void timeEvolving(float center[2], sf::Vertex upperBound[],sf::Vertex lowerBound[],sf::RenderWindow &window, int &t,sf::CircleShape &shape1);
-    void Dynamics(float center[], sf::Vertex upperBound[], sf::Vertex lowerBound[], sf::RenderWindow &window, int &t, sf::CircleShape &shape1);
     //setters
     static void setr1(float _r1) { r1 = _r1; }
     static void setr2(float _r2) { r2 = _r2; }
@@ -55,6 +48,7 @@ class ball{
     
     //operazioni
     //distruttori
+    ~ball() {}
 
     private:
     double x;
