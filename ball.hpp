@@ -32,6 +32,8 @@ class ball{
     void collidingDynamics(float center[2], sf::Vertex upperBound[], sf::Vertex lowerBound[], sf::RenderWindow &window, float &t, sf::CircleShape &shape1, 
         float &h, float &T, float v);
     void timeEvolving(float center[2], sf::Vertex upperBound[],sf::Vertex lowerBound[],sf::RenderWindow &window, int &t,sf::CircleShape &shape1);
+    bool discard(float center[], float &t, float &h, float &T,
+                   float v);
     //setters
     static void setr1(float _r1) { r1 = _r1; }
     static void setr2(float _r2) { r2 = _r2; }
@@ -45,8 +47,10 @@ class ball{
     float getY() {return y;}
     float getM() {return m;}
     float getDirection() {return Direction;} //+-1
+
     
     //operazioni
+    ball& operator=(const ball& b);
     //distruttori
     ~ball() {}
 

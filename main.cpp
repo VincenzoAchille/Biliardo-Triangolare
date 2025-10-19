@@ -19,9 +19,9 @@ int main()
     float y0{-100};
     float vx{2};
     float vy{3};
-    float theta0{-0.7};
+    float theta0{0.7};
     float m = std::tan(theta0);
-    float v{5};
+    float v{2};
 
     rangeValidity(y0, -r1,r1);
     rangeValidity(theta0, -pi/2,pi/2);
@@ -67,7 +67,7 @@ for(int i{0}; i >= 0; i++){
     }
     std::cout << "valore di controllo = " << i << '\n';
     i++;
-    if(i > 15){
+    if(i > 30){
         myPause();
     }
 }

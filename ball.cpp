@@ -21,6 +21,14 @@ ball::ball(float _x, float _y, float _m){
     m = _m;
 };
 
+ball& ball::operator=(const ball& b) {
+        x = b.x;
+        y = b.y;
+        m = b.m;
+        Direction = b.Direction;
+        return *this;
+    }
+
 float ball::alfaMax(){
     return std::abs(atan(std::abs(1/mGiac())));
 }
@@ -179,8 +187,15 @@ void ball::endingDynamics(float center[], sf::Vertex upperBound[], sf::Vertex lo
 
     ball toUpdate(x,y,m,Direction);
     toUpdate.updateXY();
-    float impactX = toUpdate.getX();
-    float impactY = toUpdate.getY();
+    float impactX;
+    float impactY; 
+    if(Direction > 0){
+    impactX = positionX(l);
+    impactY = positionY(l);
+    }else{
+    impactX = positionX(0);
+    impactY = positionY(0);
+    }
 
     float impact[2] = {impactX, impactY};
     std::cout << "x,y fine segmento all'inizio di endingDynamics" << impact[0] << ", " << impact[1] << '\n';
@@ -243,8 +258,9 @@ void ball::endingDynamics(float center[], sf::Vertex upperBound[], sf::Vertex lo
 
     ball toUpdate(x,y,m,Direction);
     toUpdate.updateXY();
-    float impactX = toUpdate.getX();
-    float impactY = toUpdate.getY();
+    float impactX = toUpdate.getX() + center[0];
+    float impactY = toUpdate.getY() + center[1];
+    float radius = shape1.getRadius();
     
     
     float impact[2] = {impactX, impactY}; 
@@ -276,16 +292,20 @@ void ball::endingDynamics(float center[], sf::Vertex upperBound[], sf::Vertex lo
         
         double scale = 1./ std::sqrt(1 + m*m);
         double effective_t = h*v;
-        float newX = positionX(effective_t);
-        float newY = positionY(effective_t);
+        float newX = positionX(effective_t) - radius;
+        float newY = positionY(effective_t) - radius;
         shape1.setPosition(center[0] + newX, center[1] - newY); 
+        sf::CircleShape shape2(5.f);
+        shape2.setFillColor(sf::Color::Green);
+        shape2.setPosition(impactX,impactY);
         window.clear();
         window.draw(upperBound, 2, sf::Lines); 
         window.draw(lowerBound, 2, sf::Lines);
         window.draw(shape1);
+        window.draw(shape2);
         window.display();
         
-        if(std::abs(newX - impact[0]) < 5. && std::abs(newY - impact[1]) < 5.) {
+        if(std::abs(newX - impact[0]) < 2. + radius && std::abs(newY - impact[1]) < 2.+ radius) {
             std::cout << "-- la pallina ha urtato! --" << '\n';
             
             float collisionX = newX;
@@ -301,6 +321,86 @@ void ball::endingDynamics(float center[], sf::Vertex upperBound[], sf::Vertex lo
     }
 }
             
+bool ball::discard(float center[], float &t, float &h, float &T,
+                   float v) {  // ho tolto tutto ciò che riguardava il radius
+  
+  std::cout << "chiamato discard " << '\n';                 
+  int k{0};
+  float i{0};
+  ball b1Temp(x, y, m, Direction);
+  bool selectedMotion = selector();
+  while (selectedMotion == 1) {
+    //std::cout << "chiamato ciclo esterno discard: "<< '\n';   
+    selectedMotion = this->selector();
+    //std::cout << "chiamato ciclo esterno discard: selectedMotion: "<< selectedMotion << ", Direzione: " << Direction << '\n';   
+    ball toUpdate(x, y, m, Direction);
+    toUpdate.updateXY();
+    float impactX;
+    float impactY;
+    if(selectedMotion ==1){
+    impactX = toUpdate.getX();
+    impactY = toUpdate.getY();}
+    else{
+      if(Direction < 0){
+    impactX = positionX(0);
+    impactY = positionY(0);
+      }else{
+    impactX = positionX(l);
+    impactY = positionY(l);
+      }
+   
+    }
+    float impact[2] = {impactX, impactY};  
+
+    if (Direction < 0) {
+      T = h;
+      i = 0;
+    }
+
+
+    while (i >= 0 ) {
+      //std::cout << "chiamato ciclo interno discard: "<< i << '\n';  
+      if (Direction > 0) {
+        h = i;
+      } else {
+        h = T - i;
+      }
+      double scale = 1. / std::sqrt(1 + m * m);
+      double effective_t = h;
+      float newX = positionX(effective_t);
+      float newY = positionY(effective_t);
+      // float radius = shape1.getRadius();
+      // shape1.setPosition(center[0] + newX, center[1] - newY);
+      //float centerX = newX;  //+ radius;  // Centro in x
+      //float centerY = newY;  // - radius;
+      //std::cout << "dentro discard " << newX << ", "  << newY << '\n';
+
+      if (std::abs(newX - impact[0]) < 10. && std::abs(newY - impact[1]) < 10.) {
+        float collisionX = newX;
+        float collisionY = newY;
+        update(collisionX, collisionY);
+        //std::cout << "dentro discard, colliding if " << x << ", "  << y << ", " << m << ", " << Direction << '\n';
+        //std::cout << "dentro discard, colliding if, parte2 " << std::abs(newX - impact[0]) << ", "  << std::abs(newX - impact[0]) <<'\n';
+        //std::cout << "dentro discard, colliding if, parte3 " << std::abs(newX - impact[0]-center[0]) << ", "  << std::abs(newX - std::abs(impact[1]) -center[1]) <<'\n' << '\n';
+        break;
+      }else if(std::abs(newX - impact[0]-center[0]) < 10. && std::abs(newY +impact[1]-center[1]) < 10.){
+        //std::cout << "dentro discard, ending if" << x << ", "  << y << ", " << m << ", " << Direction << '\n';
+        break;
+
+
+      }
+      else{
+        //std::cout << "dentro discard, else" << x << ", "  << y << ", " << m << ", " << Direction << '\n';
+        i = i + scale;
+      }
+    }
+  }
+  *this = b1Temp;
+   bool selector = invert(Direction);
+   return selector;
+  //std::cout << "dentro discard fine ciclo k :" << x << ", "  << y << ", " << m << ", " << Direction << '\n';
+  
+}
 
 
 
