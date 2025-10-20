@@ -8,7 +8,6 @@
 #include <iostream>
 #include <cmath>
 
-// osservazione: potrei creare un sistema con delle variabili generali r1,r2,l e poi tramite il polimorfismo dividerlo in 2 classi ball e grafica
 int main()
 {   
     float center[2]{300, 450};
@@ -16,12 +15,12 @@ int main()
     float r1{200};
     float r2{100};
     float l{1000};
-    float y0{-100};
+    float y0{50};
     float vx{2};
     float vy{3};
-    float theta0{0.7};
+    float theta0{0.4};
     float m = std::tan(theta0);
-    float v{2};
+    float v{5};
 
     rangeValidity(y0, -r1,r1);
     rangeValidity(theta0, -pi/2,pi/2);
@@ -53,36 +52,28 @@ int main()
     float t{0};
     float h{0};
     float T{0};
-
+    int a = b1.discard(center, t, h, T, shape1,v);
+    std::cout << "finalDirection" << a << '\n';
 for(int i{0}; i >= 0; i++){
 
     bool selectedMotion = b1.selector(); 
 
     //dynamics starting
+    
     if(selectedMotion == 0){ 
        b1.endingDynamics(center, upperBound, lowerBound, window,t,shape1,h,T,v);
     }
     else{
         b1.collidingDynamics(center, upperBound, lowerBound, window,t,shape1,h,T,v);
     }
-    std::cout << "valore di controllo = " << i << '\n';
+    //b1.dynamics(center, upperBound, lowerBound, window,t,shape1,h,T,v);
+    //std::cout << "valore di controllo = " << i << '\n';
     i++;
     if(i > 30){
         myPause();
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-    
 }
 
 

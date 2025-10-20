@@ -33,5 +33,13 @@ inline bool invert(int a){
     }
 }
 
+inline int bti(bool a){
+    if(a == 1){
+        return 1;
+    }else{
+        return -1;
+    }
+}
+
 
 #endif

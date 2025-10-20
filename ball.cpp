@@ -44,8 +44,9 @@ void ball::updateDirection(){
             Direction = Direction;
         }
 }
-bool ball::updown(){      //manca il caso m = 0, complica molto le cose
-    if(m*Direction == 0){
+bool ball::updown(){ //strano che cambiando il verso delle normali non cambi, cosi come se ho <0 o ==0. bo
+    if(r1 - r2 > 0.){
+    if(m*Direction < 0){
         return 0;
     }
     if(m*Direction > 0){
@@ -53,6 +54,16 @@ bool ball::updown(){      //manca il caso m = 0, complica molto le cose
     }else{
         return 0;
     }
+}else if(r1 - r2 < 0.){
+    if(m*Direction < 0){
+        return 0;
+    }
+    if(m*Direction > 0){
+        return 1;
+    }else{
+        return 0;
+    }
+}
 }
 
 float ball::normal(){
@@ -149,52 +160,113 @@ void ball::updateXY(){     //qui mi serve un controllo un filo più forte sul fi
     return 0;
 }
 
-void ball::timeEvolving(float center[], sf::Vertex upperBound[],sf::Vertex lowerBound[],sf::RenderWindow &window, int &t,sf::CircleShape &shape1){
-    if(Direction > 0)
-{
- shape1.setPosition(center[0] + positionX(Direction*t), center[1]- positionY(Direction*t)); 
+
+void ball::dynamics(float center[], sf::Vertex upperBound[], sf::Vertex lowerBound[], sf::RenderWindow &window, float &t, sf::CircleShape &shape1,
+    float &h, float &T, float v){
+    bool selectedMotion = this->selector();
+    float radius = shape1.getRadius() /2;
+    float extra;
+        if(updown() == 1){
+            extra = 0;
+        }else{
+            extra = 2* radius;
+        }
+    float impactX;
+    float impactY;
+    if(selectedMotion == 1){
+        ball toUpdate(x,y,m,Direction);
+        toUpdate.updateXY();
+        impactX = toUpdate.getX();
+        impactY = toUpdate.getY() + extra;
+    }else{
+        if(Direction > 0){
+        impactX = positionX(l);
+        impactY = positionY(l) + extra;
+    }else{
+        impactX = positionX(0);
+        impactY = positionY(0) + extra;
+    }
+         
+    }
+    float impact[2] = {impactX, impactY};
+    if(Direction < 0) { 
+        T = h;
+        t = 0; }
+
+
+    while (window.isOpen())
+    {   
+        if(Direction > 0){
+        h = t;
+    }else{
+        h = T -t;
+    }
+        sf::Event event;
+        while (window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed)
+                window.close();
+        }
+        
+        float scale = 1.0f / std::sqrt(1 + m*m);
+        float effective_t = h*v;
+        shape1.setPosition(center[0] + positionX(effective_t) - radius, center[1] - positionY(effective_t) - radius); 
+        float newX = positionX(effective_t);
+        float newY = positionY(effective_t);
         window.clear();
-        window.draw(upperBound, 2, sf::Lines); 
+        window.draw(upperBound, 2, sf::Lines);
         window.draw(lowerBound, 2, sf::Lines);
         window.draw(shape1);
         window.display();
-}else if(Direction < 0){
-        const int T = t;
-        std::cout << T << '\n';
-        shape1.setPosition(center[0] + positionX(T-t), center[1]- positionY(T-t));
-        window.clear();
-        window.draw(upperBound, 2, sf::Lines); 
-        window.draw(lowerBound, 2, sf::Lines);
-        window.draw(shape1);
-        window.display();
+        bool isCollision = std::abs(newX - impact[0]) < radius + 2 && 
+                   std::abs(newY - impact[1]) < radius + 2;
+
+if(isCollision) {
+    if(selectedMotion == 1) {
+        
+        update(newX, newY);
+        
+    } 
+    break;
+} else {
+
+    t = t + scale;
 }
-}
-void ball::update(float collisionX, float collisionY){
-    ball helpDir(x, y, m, Direction);
-    ball helpM(x, y, m, Direction);
-    helpM.updateM();
-    helpDir.updateDirection();
-    x = collisionX;
-    y = collisionY;
-    m = helpM.getM();
-    Direction = helpDir.getDirection();
+while (window.isOpen()) {
+            sf::Event event;
+            while (window.pollEvent(event)) {
+                if (event.type == sf::Event::Closed)
+                    window.close();
+            }
+        }
 
 
+
+
+
 }
+    }
 void ball::endingDynamics(float center[], sf::Vertex upperBound[], sf::Vertex lowerBound[], sf::RenderWindow &window, float &t, sf::CircleShape &shape1,
     float &h, float &T, float v){
-    std::cout << "endingDynamics" << '\n';
-
+    
+    float radius = shape1.getRadius() /2;
     ball toUpdate(x,y,m,Direction);
     toUpdate.updateXY();
     float impactX;
     float impactY; 
+    float extra;
+        if(updown() == 1){
+            extra = 0;
+        }else{
+            extra = 2* radius;
+        }
     if(Direction > 0){
     impactX = positionX(l);
-    impactY = positionY(l);
+    impactY = positionY(l) + extra;
+    
     }else{
     impactX = positionX(0);
-    impactY = positionY(0);
+    impactY = positionY(0) + extra;
     }
 
     float impact[2] = {impactX, impactY};
@@ -222,9 +294,11 @@ void ball::endingDynamics(float center[], sf::Vertex upperBound[], sf::Vertex lo
         
         float scale = 1.0f / std::sqrt(1 + m*m);
         float effective_t = h*v; //per il momento senza scale
-          std::cout << h << ",  " << T << ",  "<< t << '\n';
+          //std::cout << h << ",  " << T << ",  "<< t << '\n';
           //std::cout << "parametri pre-grafica:" << x << ", " << y << ", " << m << ", " << Direction << '\n';
-        shape1.setPosition(center[0] + positionX(effective_t), center[1]- positionY(effective_t)); 
+        shape1.setPosition(center[0] + positionX(effective_t) - radius, center[1] - positionY(effective_t) - radius); 
+        float newX = positionX(effective_t);
+        float newY = positionY(effective_t);
           //std::cout << "parametri grafici: " << positionX(effective_t) <<  ", " << positionY(effective_t) << '\n';
         window.clear();
         window.draw(upperBound, 2, sf::Lines);
@@ -232,7 +306,7 @@ void ball::endingDynamics(float center[], sf::Vertex upperBound[], sf::Vertex lo
         window.draw(shape1);
         window.display();
         
-        if(std::abs((shape1.getPosition()).x -center[0] - impact[0]) < 5. && (std::abs((-shape1.getPosition()).y +center[1] -impact[1]) < 5.)){
+        if(std::abs((newX - impact[0])) < radius + 2. && (std::abs((newY -impact[1])) < radius + 2.)){
             std::cout << "la pallina è scappata!" << '\n';
             while (window.isOpen())
     {
@@ -245,7 +319,7 @@ void ball::endingDynamics(float center[], sf::Vertex upperBound[], sf::Vertex lo
     }
 
         }else{
-            t++;
+            t = t +scale;
         }
     }}
 
@@ -254,15 +328,20 @@ void ball::endingDynamics(float center[], sf::Vertex upperBound[], sf::Vertex lo
                            sf::RenderWindow &window, float &t, sf::CircleShape &shape1, 
                            float &h, float &T, float v)
 {  
-    std::cout << "collidingDynamics" << '\n';
-
+    float radius = shape1.getRadius() /2;
     ball toUpdate(x,y,m,Direction);
     toUpdate.updateXY();
-    float impactX = toUpdate.getX() + center[0];
-    float impactY = toUpdate.getY() + center[1];
-    float radius = shape1.getRadius();
+    float extra;
+        if(updown() == 1){
+            extra = 0;
+        }else{
+            extra = 2* radius;
+        }
+        
+    float impactX = toUpdate.getX();
+    float impactY = toUpdate.getY() + extra;
     
-    
+     
     float impact[2] = {impactX, impactY}; 
   
     if(Direction < 0) { 
@@ -292,26 +371,31 @@ void ball::endingDynamics(float center[], sf::Vertex upperBound[], sf::Vertex lo
         
         double scale = 1./ std::sqrt(1 + m*m);
         double effective_t = h*v;
-        float newX = positionX(effective_t) - radius;
-        float newY = positionY(effective_t) - radius;
-        shape1.setPosition(center[0] + newX, center[1] - newY); 
-        sf::CircleShape shape2(5.f);
-        shape2.setFillColor(sf::Color::Green);
-        shape2.setPosition(impactX,impactY);
+        float newX = positionX(effective_t);
+        float newY = positionY(effective_t);
+        shape1.setPosition(newX + center[0] - radius, center[1]- newY - radius); 
+        /*
+        sf::CircleShape impatto(5.f);
+        sf::CircleShape centro(4.f);
+        impatto.setFillColor(sf::Color::Green);
+        impatto.setPosition(impactX + center[0],center[1]-impactY);
+        centro.setFillColor(sf::Color::Red);
+        centro.setPosition(newX + center[0], center[1]- newY);*/
         window.clear();
         window.draw(upperBound, 2, sf::Lines); 
         window.draw(lowerBound, 2, sf::Lines);
         window.draw(shape1);
-        window.draw(shape2);
+        //window.draw(impatto);
+        //window.draw(centro);
         window.display();
-        
-        if(std::abs(newX - impact[0]) < 2. + radius && std::abs(newY - impact[1]) < 2.+ radius) {
-            std::cout << "-- la pallina ha urtato! --" << '\n';
+    
+        if(std::abs(newX - impact[0]) < radius + 2. && std::abs(newY - impact[1]) < radius + 2. )
+            {std::cout << "-- la pallina ha urtato! --" << '\n';
             
             float collisionX = newX;
             float collisionY = newY;
             
-           update(collisionX, collisionY);
+            update(collisionX, collisionY);
             
             std::cout << "parametri alla fine di collidingDynamics: " << x << ", " << y << ", " << m << ", " << Direction << '\n';
             break;
@@ -321,7 +405,7 @@ void ball::endingDynamics(float center[], sf::Vertex upperBound[], sf::Vertex lo
     }
 }
             
-bool ball::discard(float center[], float &t, float &h, float &T,
+int ball::discard(float center[], float &t, float &h, float &T,sf::CircleShape &shape1,
                    float v) {  // ho tolto tutto ciò che riguardava il radius
   
   std::cout << "chiamato discard " << '\n';                 
@@ -330,9 +414,9 @@ bool ball::discard(float center[], float &t, float &h, float &T,
   ball b1Temp(x, y, m, Direction);
   bool selectedMotion = selector();
   while (selectedMotion == 1) {
-    //std::cout << "chiamato ciclo esterno discard: "<< '\n';   
+    
     selectedMotion = this->selector();
-    //std::cout << "chiamato ciclo esterno discard: selectedMotion: "<< selectedMotion << ", Direzione: " << Direction << '\n';   
+  
     ball toUpdate(x, y, m, Direction);
     toUpdate.updateXY();
     float impactX;
@@ -359,7 +443,7 @@ bool ball::discard(float center[], float &t, float &h, float &T,
 
 
     while (i >= 0 ) {
-      //std::cout << "chiamato ciclo interno discard: "<< i << '\n';  
+      
       if (Direction > 0) {
         h = i;
       } else {
@@ -369,38 +453,28 @@ bool ball::discard(float center[], float &t, float &h, float &T,
       double effective_t = h;
       float newX = positionX(effective_t);
       float newY = positionY(effective_t);
-      // float radius = shape1.getRadius();
-      // shape1.setPosition(center[0] + newX, center[1] - newY);
-      //float centerX = newX;  //+ radius;  // Centro in x
-      //float centerY = newY;  // - radius;
-      //std::cout << "dentro discard " << newX << ", "  << newY << '\n';
+     
 
       if (std::abs(newX - impact[0]) < 10. && std::abs(newY - impact[1]) < 10.) {
         float collisionX = newX;
         float collisionY = newY;
         update(collisionX, collisionY);
-        //std::cout << "dentro discard, colliding if " << x << ", "  << y << ", " << m << ", " << Direction << '\n';
-        //std::cout << "dentro discard, colliding if, parte2 " << std::abs(newX - impact[0]) << ", "  << std::abs(newX - impact[0]) <<'\n';
-        //std::cout << "dentro discard, colliding if, parte3 " << std::abs(newX - impact[0]-center[0]) << ", "  << std::abs(newX - std::abs(impact[1]) -center[1]) <<'\n' << '\n';
+
         break;
       }else if(std::abs(newX - impact[0]-center[0]) < 10. && std::abs(newY +impact[1]-center[1]) < 10.){
-        //std::cout << "dentro discard, ending if" << x << ", "  << y << ", " << m << ", " << Direction << '\n';
+        
         break;
 
 
       }
       else{
-        //std::cout << "dentro discard, else" << x << ", "  << y << ", " << m << ", " << Direction << '\n';
+        
         i = i + scale;
       }
     }
   }
+  int newDirection = Direction;
   *this = b1Temp;
-   bool selector = invert(Direction);
-   return selector;
-  //std::cout << "dentro discard fine ciclo k :" << x << ", "  << y << ", " << m << ", " << Direction << '\n';
-  
+  return newDirection;
+
 }
-
-
-
