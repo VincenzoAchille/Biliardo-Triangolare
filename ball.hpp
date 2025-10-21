@@ -3,29 +3,28 @@
 
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
-#include <iostream>
 
 class ball{
     public:
     //costruttori
     ball(float x, float y, float m,int direction);
     ball(float x, float y, float m);
-    ball();
+    // ball();
     //manca il costruttore copia
-    ball(const ball& b) : x(b.x), y(b.y), m(b.m), Direction(b.Direction) {}
+    // ball(const ball& b) : x(b.x), y(b.y), m(b.m), Direction(b.Direction) {}
     //metodi
     void firstUpdateXY(); //mi genera i primi xu e yu da cui derivo la prima equazione di giacomini
     void nUpdateXY();
     void updateXY();
     void updateDirection();
     float positionX(float t) {return t;}
-    float positionY(float t) {return m*(t-x) + y;}
+    float positionY(float t) {return m_m*(t-m_x) + m_y;}
     void update(float collisionX, float collisionY);
     void updateM();
     float angleRespectNormal();
     bool selector();
     float normal();
-    float alfaMax();
+    float alfaMax() const;
     bool updown();
     void endingDynamics(float center[2], sf::Vertex upperBound[], sf::Vertex lowerBound[], sf::RenderWindow &window, float &t, sf::CircleShape &shape1, 
         float &h, float &T, float v);
@@ -37,18 +36,18 @@ class ball{
     void dynamics(float center[], sf::Vertex upperBound[], sf::Vertex lowerBound[], sf::RenderWindow &window, float &t, sf::CircleShape &shape1,
     float &h, float &T, float v);     
     //setters
-    static void setr1(float _r1) { r1 = _r1; }
-    static void setr2(float _r2) { r2 = _r2; }
-    static void setl(float _l) { l = _l; }
+    static void r1(float _r1) { m_r1 = _r1; }
+    static void setr2(float _r2) { m_r2 = _r2; }
+    static void setl(float _l) { m_l = _l; }
     //getters
-    static float getr1() { return r1;}
-    static float getr2() { return r2; }
-    static float getl() { return l;}
-    static float mGiac() {return std::abs(l/(r2 - r1));}
-    float getX() {return x;}
-    float getY() {return y;}
-    float getM() {return m;}
-    float getDirection() {return Direction;} //+-1
+    static float getr1() { return m_r1;}
+    static float getr2() { return m_r2; }
+    static float getl() { return m_l;}
+    static float mGiac() {return std::abs(m_l/(m_r2 - m_r1));}
+    float getX() {return m_x;}
+    float getY() {return m_y;}
+    float getM() {return m_m;}
+    int getDirection() {return m_direction;} //+-1
 
     
     //operazioni
@@ -57,15 +56,14 @@ class ball{
     ~ball() {}
 
     private:
-    double x;
-    double y;
-    double m;
-    int Direction {1};
+    float m_x;
+    float m_y;
+    float m_m;
+    int m_direction {1};
 
-    static float l; //vanno inizializzati come puntatori?
-    static float r1;
-    static float r2;
-    const float pi = 3.14;
+    static float m_l; //vanno inizializzati come puntatori?
+    static float m_r1;
+    static float m_r2;
 };
 
 #endif

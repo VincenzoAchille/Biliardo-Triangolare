@@ -43,7 +43,8 @@
 						25,
 						26,
 						27,
-						28
+						28,
+						29
 					]
 				}
 			],
@@ -86,7 +87,8 @@
 						25,
 						26,
 						27,
-						28
+						28,
+						29
 					]
 				}
 			],
@@ -293,6 +295,13 @@
 					"id" : "biliardo_triangolare::@6890427a1f51a3e7e1df",
 					"jsonFile" : "target-biliardo_triangolare-Debug-e5129df331e3629fb069.json",
 					"name" : "biliardo_triangolare",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "prova_gui::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-prova_gui-Debug-580f48c158656288ff05.json",
+					"name" : "prova_gui",
 					"projectIndex" : 0
 				}
 			]

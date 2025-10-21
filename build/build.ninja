@@ -253,6 +253,39 @@ build biliardo_triangolare: CXX_EXECUTABLE_LINKER__biliardo_triangolare_Debug CM
   TARGET_FILE = biliardo_triangolare
   TARGET_PDB = biliardo_triangolare.dbg
 
+# =============================================================================
+# Object build statements for EXECUTABLE target prova_gui
+
+
+#############################################
+# Order-only phony target for prova_gui
+
+build cmake_object_order_depends_target_prova_gui: phony || CMakeFiles/prova_gui.dir
+
+build CMakeFiles/prova_gui.dir/provaInterfacciaGrafica.cpp.o: CXX_COMPILER__prova_gui_Debug /home/vincenzo03/FinalProject/provaInterfacciaGrafica.cpp || cmake_object_order_depends_target_prova_gui
+  DEP_FILE = CMakeFiles/prova_gui.dir/provaInterfacciaGrafica.cpp.o.d
+  FLAGS = -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Wshadow -Wimplicit-fallthrough -Wextra-semi -Wold-style-cast -fno-omit-frame-pointer -D_GLIBCXX_ASSERTIONS -D_GLIBCXX_SANITIZE_STD_ALLOCATOR -g -fsanitize=address,undefined -std=c++20
+  OBJECT_DIR = CMakeFiles/prova_gui.dir
+  OBJECT_FILE_DIR = CMakeFiles/prova_gui.dir
+
+
+# =============================================================================
+# Link build statements for EXECUTABLE target prova_gui
+
+
+#############################################
+# Link the executable prova_gui
+
+build prova_gui: CXX_EXECUTABLE_LINKER__prova_gui_Debug CMakeFiles/prova_gui.dir/provaInterfacciaGrafica.cpp.o | /usr/lib/x86_64-linux-gnu/libsfml-graphics.so.2.5.1 /usr/lib/x86_64-linux-gnu/libsfml-window.so.2.5.1 /usr/lib/x86_64-linux-gnu/libsfml-system.so.2.5.1
+  FLAGS = -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Wshadow -Wimplicit-fallthrough -Wextra-semi -Wold-style-cast -fno-omit-frame-pointer -D_GLIBCXX_ASSERTIONS -D_GLIBCXX_SANITIZE_STD_ALLOCATOR -g -fsanitize=address,undefined
+  LINK_FLAGS = -fsanitize=address,undefined
+  LINK_LIBRARIES = /usr/lib/x86_64-linux-gnu/libsfml-graphics.so.2.5.1  /usr/lib/x86_64-linux-gnu/libsfml-window.so.2.5.1  /usr/lib/x86_64-linux-gnu/libsfml-system.so.2.5.1
+  OBJECT_DIR = CMakeFiles/prova_gui.dir
+  POST_BUILD = :
+  PRE_LINK = :
+  TARGET_FILE = prova_gui
+  TARGET_PDB = prova_gui.dbg
+
 
 #############################################
 # Utility command for test
@@ -523,7 +556,7 @@ build CMakeFiles/ContinuousSubmit | ${cmake_ninja_workdir}CMakeFiles/ContinuousS
 #############################################
 # Folder: /home/vincenzo03/FinalProject/build
 
-build all: phony biliardo_triangolare
+build all: phony biliardo_triangolare prova_gui
 
 # =============================================================================
 # Built-in targets

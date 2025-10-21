@@ -41,6 +41,10 @@ add_executable(biliardo_triangolare main.cpp Methods.cpp ball.cpp)
 # nel caso si usi SFML. analogamente per eventuali altre librerie
 target_link_libraries(biliardo_triangolare PRIVATE sfml-graphics)
 
+
+add_executable(prova_gui provaInterfacciaGrafica.cpp)
+target_link_libraries(prova_gui PRIVATE sfml-graphics)
+
 # aggiungere eventuali altri eseguibili
 
 # il testing e' abilitato di default

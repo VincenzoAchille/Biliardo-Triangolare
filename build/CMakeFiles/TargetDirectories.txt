@@ -27,6 +27,7 @@
 /home/vincenzo03/FinalProject/build/CMakeFiles/ContinuousMemCheck.dir
 /home/vincenzo03/FinalProject/build/CMakeFiles/ContinuousSubmit.dir
 /home/vincenzo03/FinalProject/build/CMakeFiles/biliardo_triangolare.dir
+/home/vincenzo03/FinalProject/build/CMakeFiles/prova_gui.dir
 /home/vincenzo03/FinalProject/build/CMakeFiles/test.dir
 /home/vincenzo03/FinalProject/build/CMakeFiles/edit_cache.dir
 /home/vincenzo03/FinalProject/build/CMakeFiles/rebuild_cache.dir
