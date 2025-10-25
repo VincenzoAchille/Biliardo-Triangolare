@@ -6,13 +6,12 @@
 #include <cstdlib>
 #include <iostream>
 
-inline void rangeValidity(float value, float a, float b) { //da capire come trattare la conversione agli estremi 
-  float A = static_cast<float>(a);
-  float B = static_cast<float>(b);
-  if (A > value || value > B) {
-    std::cout << "Errore: valorre fuori dal range" << '\n';
-    exit(1);
-  }
+inline void rangeValidity(float value, float min, float max) {
+    if (value >= min && value <= max) { 
+        return; 
+    }
+    std::cout << min << ", " << max;
+    throw std::out_of_range("Value out of range");  
 }
 
 inline int sgn(float x) {
