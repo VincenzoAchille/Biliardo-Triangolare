@@ -15,6 +15,11 @@ inline void rangeValidity(float value, float min, float max) { //[] estremi comp
     throw std::out_of_range("Value out of range");  
 }
 
+inline int sgn(float x) {
+return x > 0 ? 1:-1;  
+  // return (x > 0) - (x < 0);
+}
+
 class ball {
  public:
   // costruttori
@@ -83,7 +88,7 @@ class ball {
   float m_y;
   float m_m;
   int m_direction{1};
-  float m_radius{5.f};
+  float m_radius{10.f};
 
   static float m_l;
   static float m_r1;

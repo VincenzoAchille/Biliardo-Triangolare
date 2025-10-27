@@ -5,20 +5,17 @@
 
 #include "ball.hpp"
 
-inline int sgn(float x) {
-return x > 0 ? 1:-1;  
-  // return (x > 0) - (x < 0);
-}
+
 
 int main() {
   // constexpr float M_PI_F = static_cast<float> (M_PI);
   sf::Vector2f center(300, 450);
-  float r1{200};
-  float r2{100};
+  float r1{100};
+  float r2{200};
   float l{1000};
-  float y0{100};
-  float theta0{0.6};
-  float v{2};
+  float y0{50};
+  float theta0{0.4};
+  float v{4};
   /*std::cout << "inserisci i parametri per la forma del biliardo:" << '\n';
   std::cout << "r1 = ";
   std::cin >> r1;
@@ -61,6 +58,7 @@ int main() {
     float m = std::tan(static_cast<float>(theta0));
     ball b1(0, y0, m);
     sf::CircleShape shape1(10.f);
+    shape1.setOrigin(10.f,10.f);
     shape1.setPosition(center.x, center.y - y0);
     shape1.setFillColor(sf::Color::Cyan);
     float t{0};
