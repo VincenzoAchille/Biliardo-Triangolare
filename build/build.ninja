@@ -223,12 +223,6 @@ build CMakeFiles/biliardo_triangolare.dir/main.cpp.o: CXX_COMPILER__biliardo_tri
   OBJECT_DIR = CMakeFiles/biliardo_triangolare.dir
   OBJECT_FILE_DIR = CMakeFiles/biliardo_triangolare.dir
 
-build CMakeFiles/biliardo_triangolare.dir/Methods.cpp.o: CXX_COMPILER__biliardo_triangolare_Debug /home/vincenzo03/FinalProject/Methods.cpp || cmake_object_order_depends_target_biliardo_triangolare
-  DEP_FILE = CMakeFiles/biliardo_triangolare.dir/Methods.cpp.o.d
-  FLAGS = -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Wshadow -Wimplicit-fallthrough -Wextra-semi -Wold-style-cast -fno-omit-frame-pointer -D_GLIBCXX_ASSERTIONS -D_GLIBCXX_SANITIZE_STD_ALLOCATOR -g -fsanitize=address,undefined -std=c++20
-  OBJECT_DIR = CMakeFiles/biliardo_triangolare.dir
-  OBJECT_FILE_DIR = CMakeFiles/biliardo_triangolare.dir
-
 build CMakeFiles/biliardo_triangolare.dir/ball.cpp.o: CXX_COMPILER__biliardo_triangolare_Debug /home/vincenzo03/FinalProject/ball.cpp || cmake_object_order_depends_target_biliardo_triangolare
   DEP_FILE = CMakeFiles/biliardo_triangolare.dir/ball.cpp.o.d
   FLAGS = -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Wshadow -Wimplicit-fallthrough -Wextra-semi -Wold-style-cast -fno-omit-frame-pointer -D_GLIBCXX_ASSERTIONS -D_GLIBCXX_SANITIZE_STD_ALLOCATOR -g -fsanitize=address,undefined -std=c++20
@@ -243,7 +237,7 @@ build CMakeFiles/biliardo_triangolare.dir/ball.cpp.o: CXX_COMPILER__biliardo_tri
 #############################################
 # Link the executable biliardo_triangolare
 
-build biliardo_triangolare: CXX_EXECUTABLE_LINKER__biliardo_triangolare_Debug CMakeFiles/biliardo_triangolare.dir/main.cpp.o CMakeFiles/biliardo_triangolare.dir/Methods.cpp.o CMakeFiles/biliardo_triangolare.dir/ball.cpp.o | /usr/lib/x86_64-linux-gnu/libsfml-graphics.so.2.5.1 /usr/lib/x86_64-linux-gnu/libsfml-window.so.2.5.1 /usr/lib/x86_64-linux-gnu/libsfml-system.so.2.5.1
+build biliardo_triangolare: CXX_EXECUTABLE_LINKER__biliardo_triangolare_Debug CMakeFiles/biliardo_triangolare.dir/main.cpp.o CMakeFiles/biliardo_triangolare.dir/ball.cpp.o | /usr/lib/x86_64-linux-gnu/libsfml-graphics.so.2.5.1 /usr/lib/x86_64-linux-gnu/libsfml-window.so.2.5.1 /usr/lib/x86_64-linux-gnu/libsfml-system.so.2.5.1
   FLAGS = -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Wshadow -Wimplicit-fallthrough -Wextra-semi -Wold-style-cast -fno-omit-frame-pointer -D_GLIBCXX_ASSERTIONS -D_GLIBCXX_SANITIZE_STD_ALLOCATOR -g -fsanitize=address,undefined
   LINK_FLAGS = -fsanitize=address,undefined
   LINK_LIBRARIES = /usr/lib/x86_64-linux-gnu/libsfml-graphics.so.2.5.1  /usr/lib/x86_64-linux-gnu/libsfml-window.so.2.5.1  /usr/lib/x86_64-linux-gnu/libsfml-system.so.2.5.1
