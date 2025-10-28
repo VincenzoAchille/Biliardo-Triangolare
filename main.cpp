@@ -10,11 +10,11 @@
 int main() {
   // constexpr float M_PI_F = static_cast<float> (M_PI);
   sf::Vector2f center(300, 450);
-  float r1{100};
+  float r1{200};
   float r2{200};
-  float l{1000};
-  float y0{50};
-  float theta0{0.4};
+  float l{1200};
+  float y0{-80};
+  float theta0{-2.0f};
   float v{4};
   /*std::cout << "inserisci i parametri per la forma del biliardo:" << '\n';
   std::cout << "r1 = ";
@@ -67,7 +67,13 @@ int main() {
     // int finalDirection = b1.discard(center, h, T);
     // std::cout << "finalDirection = " << finalDirection << '\n';
     b1.dynamicsAnimated(center, upperBound, lowerBound, window, t, shape1, h, T, v);
-    std::cout << "Parametri finali: " << '\n' << "1) Altezza di impatto: " << b1.getY() << '\n' << "2) Angolo di uscita: " << b1.getM() << '\n';
+    //std::cout << "Parametri finali: " << '\n' << "1) Altezza di impatto: " << b1.getY() << '\n' << "2) Angolo di uscita: " << b1.getM() << '\n';
+    std::cout << "Parametri finali: X= " << b1.getX() << " Y= " << b1.getY() << " m= " <<b1.getM() << " direction = " << b1.getDirection() << '\n';
+    ball b2(0, y0, m);
+    b2.dynamics(center, window, t,h, T);
+    std::cout << "Parametri finali discard: X= " << b2.getX() << " Y= " << b2.getY() << " m= " <<b2.getM() << " direction = " << b2.getDirection() << '\n';
+     std::cout << "Parametri finali: X= " << b1.getX() << " Y= " << b1.getY() << " m= " <<b1.getM() << " direction = " << b1.getDirection() << '\n';
+
   } else if (input == 2) {
     int N{0};
     bool isDiscarted;

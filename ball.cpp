@@ -6,29 +6,14 @@
 #include <SFML/Window.hpp>
 #include <algorithm>
 #include <cmath>
-
+#include <iostream>
 float ball::m_l = 1.f;
 float ball::m_r1 = 1.f;
 float ball::m_r2 = 1.f;
-// sf::Vector2f center (300,450);
-// sf::Vector2f window (1600,900);
+sf::Vector2f ball::m_center (300,450);
+sf::Vector2i ball::m_window (1600,900);
+float ball::m_errorTolerance = 5.f;
 
-ball::ball(float _x, float _y, float _m, int _direction) {
-  // rangeValidity(_x);
-  float maxY = std::max(m_r1, m_r2);
-  rangeValidity(_x, 0., 900.);
-  rangeValidity(_y, -maxY, maxY);
-  if (_direction != 1 && _direction != -1) {
-    throw std::out_of_range("Value out of range");
-  }
-
-  m_x = _x;
-  m_y = _y;
-  m_m = _m;
-  m_direction = _direction;
-}
-
-ball::ball(float _x, float _y, float _m) : ball(_x, _y, _m, 1) {}
 
 ball &ball::operator=(const ball &b) {
   m_x = b.m_x;
@@ -42,7 +27,7 @@ float ball::alfaMax() const {
   return static_cast<float>(std::abs(atan(1 / mGiac())));
 }
 
-void ball::updateDirection() {
+void ball::updateDirection() { //dubbio se tenere il secondo if
   float angle = angleRespectNormal();
 
   if (alfaMax() - angle > 0.) {
@@ -71,7 +56,9 @@ void ball::updateDirection() {
 float ball::normal() const {
   float controlValue = m_m * static_cast<float>(m_direction);
   int normalDirection;
-  if(m_r1 < m_r2){
+  std::cout << "controlValue: " << controlValue << '\n';
+  if(m_r1 >= m_r2){
+    std::cout << "entrato in m_r1 >= m_r2" << '\n';
   if (controlValue < 0) {
     normalDirection = -1;
   } else if (controlValue > 0) {
@@ -81,6 +68,8 @@ float ball::normal() const {
     return 0;
   }
   }else{
+    std::cout << "entrato in m_r1 < m_r2" << '\n';
+
     if (controlValue < 0) {
     normalDirection = 1;
   } else if (controlValue > 0) {
@@ -120,38 +109,23 @@ float ball::angleRespectNormal() {
   return b;
 }
 
-/*void ball::OLDupdateXY() {
-  float A = normal();
-  std::cout << "normal in updateXY: " << A << '\n';
-  if (A >= 0) {
-    float xu = m_x;
-    m_x = (m_r1 - m_y + m_m * m_x) / (m_m - (m_r2 - m_r1) / m_l);
-    m_y = m_m * (m_x - xu) + m_y;
-
-  } else if (A < 0) {
-    float xu = m_x;
-    m_x = (-m_r1 - m_y + m_m * m_x) / (m_m + (m_r2 - m_r1) / m_l);
-    m_y = m_m * (m_x - xu) + m_y;
-  }
-}*/
-
-void ball::updateXY() {  // attenzione perchè nel caso r2 < r1 ho dipendenza
-                         // anche dalla direzione
+void ball::updateXY() { 
   float A = normal();
   float distance = 0;
-  std::cout << "normal in updateXY: " << A << '\n';
+  //std::cout << "normal in updateXY: " << A << '\n';
   if (A >= 0) {
     float xu = m_x;
-    m_x = (m_r1 - (m_y - distance) + m_m * m_x) /
+    m_x = (m_r1 *sgn(m_r1-m_r2) - (m_y - distance) + m_m * m_x) /
           (m_m + std::abs(m_r2 - m_r1) / m_l);
     m_y = m_m * (m_x - xu) + m_y - distance;
 
   } else if (A < 0) {
     float xu = m_x;
-    m_x = (-m_r1 - (m_y - distance) + m_m * m_x) /
+    m_x = (-m_r1*sgn(m_r1-m_r2) - (m_y - distance) + m_m * m_x) /
           (m_m - std::abs(m_r2 - m_r1) / m_l);
     m_y = m_m * (m_x - xu) + m_y - distance;
   }
+
 }
 bool ball::selector() {
   {
@@ -236,7 +210,7 @@ void ball::dynamicsAnimated(sf::Vector2f center, sf::Vertex upperBound[],
       pilot.setPosition(center.x + positionX(effective_t) +
                             m_direction * m_radius * std::cos(angle),
                         center.y - positionY(effective_t) -
-                            sgn(normal()) * m_radius * std::sin(angle));
+                            sgn(normal())*sgn(m_r1-m_r2) * m_radius * std::sin(angle));
 
       float newX = positionX(effective_t);
       float newY = positionY(effective_t);
@@ -245,19 +219,16 @@ void ball::dynamicsAnimated(sf::Vector2f center, sf::Vertex upperBound[],
       window.draw(upperBound, 2, sf::Lines);
       window.draw(lowerBound, 2, sf::Lines);
       window.draw(shape1);
-      // window.draw(pilot);
-      // window.draw(Impact);
+      window.draw(pilot);
+      window.draw(Impact);
 
       window.display();
-      // std::cout << "valori impatto: X= " << newX - impact.x << "Y= " << newY
-      // - impact.y << "New Radius:" << 2*m_radius << '\n'; il problema è che
-      // isCollision è sul pilota
       bool isCollision =
           std::abs((newX + m_direction * m_radius * std::cos(angle)) -
-                   impact.x) < 5. &&
-          std::abs((newY + sgn(normal()) * m_radius * std::sin(angle)) -
-                   impact.y) < 5.;
-      // std::cout << "valori impatto, X= " << newX << " impatto= " << impact.x
+                   impact.x) < m_errorTolerance &&
+          std::abs((newY + sgn(normal())*sgn(m_r1-m_r2) * m_radius * std::sin(angle)) -
+                   impact.y) < m_errorTolerance;
+       //std::cout << "valori impatto, X= " << newX << " impatto= " << impact.x << '\n';
       // << " corr corpo rigido= " << m_direction*m_radius*std::cos(angle) <<
       // "distance:" << std::abs((newX+m_direction*m_radius*std::cos(angle)) -
       // impact.x)<<'\n'; std::cout << "valori impatto, Y= " << newY << "
@@ -267,28 +238,33 @@ void ball::dynamicsAnimated(sf::Vector2f center, sf::Vertex upperBound[],
       // '\n' << '\n';
 
       float yFinalCollision;
+      float xFinalCollision;
       if (m_direction > 0) {
         yFinalCollision = m_m * (m_l - m_x) + m_y;
+        xFinalCollision = m_l;
       } else {
         yFinalCollision = -m_m * m_x + m_y;
+        xFinalCollision = 0.f;
       }
       bool finalCollision;
       if (m_direction > 0) {
         finalCollision =
-            std::abs(newX - m_l) < 5. && std::abs(newY - yFinalCollision) < 5.;
+            std::abs(newX - m_l) < m_errorTolerance && std::abs(newY - yFinalCollision) < m_errorTolerance;
       } else {
         finalCollision =
-            std::abs(newX - 0.) < 5. && std::abs(newY - yFinalCollision) < 5.;
+            std::abs(newX - 0.) < m_errorTolerance && std::abs(newY - yFinalCollision) < m_errorTolerance;
       }
       //std::cout << "controllo urto finaleY: finalCollision " << yFinalCollision << " Y= " << newY << "distance: " << std::abs(newY - yFinalCollision) << "bool: " << finalCollision << '\n';
       //std::cout << "controllo urto finaleX: finalCollision " << 0. << " Y= " << newX << "distance: " << std::abs(newX) << '\n' << '\n';
       //std::cout <<"moto selezionato: " << selectedMotion << '\n';
       if (selectedMotion == 1 && isCollision) {
-        std::cout << "urto contro parete" << '\n' << '\n';
+        //std::cout << "urto contro parete" << '\n' << '\n';
         update(newX, newY);
         break;
       } else if (selectedMotion == 0 && finalCollision) {
         std::cout << "urto finale" << '\n' << '\n';
+        ball bTemp (xFinalCollision,yFinalCollision,m_m,m_direction);
+        *this = bTemp;
         while (window.isOpen()) {
           sf::Event event2;
           while (window.pollEvent(event2)) {
@@ -320,7 +296,7 @@ void ball::dynamicsAnimated(sf::Vector2f center, sf::Vertex upperBound[],
   }
 }
 
-int ball::dynamics(sf::Vector2f center, float &h,
+/*int ball::dynamics(sf::Vector2f center, float &h,
                    float &T) {  // ho tolto tutto ciò che riguardava il radius
                                 // sembra non usare t
   float i{0};
@@ -379,4 +355,89 @@ int ball::dynamics(sf::Vector2f center, float &h,
   int newDirection = m_direction;
   *this = b1Temp;
   return newDirection;
+}*/
+
+void ball::dynamics(sf::Vector2f center,
+                            sf::RenderWindow &window,
+                            float &t, float &h,
+                            float &T) {
+                             
+  for (int i{0}; i >= 0; i++) {
+    float j = 0.f;
+    std::cout << "entrato nel ciclo esterno" << '\n';
+    bool selectedMotion = this->selector();
+    sf::Vector2f impact;
+    if (selectedMotion == 1) {
+      ball toUpdate(m_x, m_y, m_m, m_direction);
+      toUpdate.updateXY();
+      impact.x = toUpdate.getX();
+      impact.y = toUpdate.getY();
+    } else {
+      if (m_direction > 0) {
+        impact.x = positionX(m_l);
+        impact.y = positionY(m_l);
+      } else {
+        impact.x = positionX(0);
+        impact.y = positionY(0);
+      }
+    }
+    if (m_direction < 0) {
+      T = h;
+      j = 0;
+    }
+    float scale = 1.0f / std::sqrt(1 + m_m * m_m);
+    while(j >=0) {
+      
+      if (m_direction > 0) {
+        h = j;
+      } else {
+        h = T - j;
+      }
+      //float effective_t = h * v;
+      float angle = std::abs(std::atan(m_m));
+      float newX = positionX(h);
+      float newY = positionY(h);
+      bool isCollision =
+          std::abs((newX + m_direction * m_radius * std::cos(angle)) -
+                   impact.x) < m_errorTolerance &&
+          std::abs((newY + sgn(normal())*sgn(m_r1-m_r2) * m_radius * std::sin(angle)) -
+                   impact.y) < m_errorTolerance;
+      std::cout << "valori collisione" << "X= " << std::abs(newX + m_direction * m_radius * std::cos(angle) -
+                   impact.x) << " Y= " << std::abs((newY + sgn(normal())*sgn(m_r1-m_r2) * m_radius * std::sin(angle)) -
+                   impact.y) << '\n';
+          
+      float xFinalCollision;
+      float yFinalCollision;
+      if (m_direction > 0) {
+        yFinalCollision = m_m * (m_l - m_x) + m_y;
+        xFinalCollision = m_l;
+      } else {
+        yFinalCollision = -m_m * m_x + m_y;
+        xFinalCollision = 0.f;
+      }
+      bool finalCollision;
+      if (m_direction > 0) {
+        finalCollision =
+            std::abs(newX - m_l) < m_errorTolerance && std::abs(newY - yFinalCollision) < m_errorTolerance;
+      } else {
+        finalCollision =
+            std::abs(newX - 0.) < m_errorTolerance && std::abs(newY - yFinalCollision) < m_errorTolerance;
+      }
+      if (selectedMotion == 1 && isCollision) {
+        std::cout << "urto contro parete" << '\n' << '\n';
+        update(newX, newY);
+        break;
+      } else if (selectedMotion == 0 && finalCollision) {
+        std::cout << "dinamica finale" << '\n';
+        ball bTemp (xFinalCollision,yFinalCollision,m_m,m_direction);
+        *this = bTemp;
+        return;
+        }
+        else{
+          j = j+scale;
+        }
+    }
+  }
 }
+
+

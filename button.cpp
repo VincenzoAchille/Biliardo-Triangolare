@@ -13,18 +13,21 @@ int main(){
     radiusCircle.setPosition(radius,radius);
     //voglio che setPosition mi setti il centro.
     //radiusCircle.setPosition()
-    sf::RenderWindow window(sf::VideoMode(1000, 1000), "Circle test");
+    sf::VideoMode desktopMode = sf::VideoMode::getDesktopMode();
+    sf::RenderWindow window(desktopMode, "Finestra Fullscreen", sf::Style::Fullscreen);
     int t{0};
+    std::cout << "Larghezza desktop (x): " << desktopMode.width << " pixel" << std::endl;
+    std::cout << "Altezza desktop (y): " << desktopMode.height << " pixel" << std::endl;
     while(window.isOpen()){
         sf::Event event;
       while (window.pollEvent(event)) {
         if (event.type == sf::Event::Closed) window.close();
       }
-        mainCircle.setPosition(t,t/2);
-        window.clear();
-        window.draw(mainCircle);
-        window.draw(radiusCircle);
-        window.display();
+        //mainCircle.setPosition(t,t/2);
+        //window.clear();
+        //window.draw(mainCircle);
+        //window.draw(radiusCircle);
+        //window.display();
         t++;
     }
 }
