@@ -34,16 +34,13 @@ string(APPEND CMAKE_EXE_LINKER_FLAGS_DEBUG " -fsanitize=address,undefined")
 
 # se usato, richiedi il componente graphics della libreria SFML (versione 2.6 in Ubuntu 24.04)
 find_package(SFML 2.5 COMPONENTS graphics REQUIRED)
+find_package(ROOT COMPONENTS CONFIG REQUIRED)
 
 # dichiara un eseguibile chiamato "progetto", prodotto a partire dai file sorgente indicati
 # sostituire "progetto" con il nome del proprio eseguibile e i file sorgente con i propri (con nomi sensati!)
-add_executable(biliardo_triangolare main.cpp ball.cpp)
+add_executable(biliardo_triangolare main.cpp ball.cpp statisticsRoot.hpp) #sto compilando un hpp
 # nel caso si usi SFML. analogamente per eventuali altre librerie
-target_link_libraries(biliardo_triangolare PRIVATE sfml-graphics)
-
-
-add_executable(prova_gui provaInterfacciaGrafica.cpp)
-target_link_libraries(prova_gui PRIVATE sfml-graphics)
+target_link_libraries(biliardo_triangolare PRIVATE sfml-graphics ROOT::Core ROOT::Hist ROOT::Gpad)
 
 # aggiungere eventuali altri eseguibili
 

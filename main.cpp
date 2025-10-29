@@ -2,20 +2,18 @@
 #include <SFML/Window.hpp>
 #include <cmath>
 #include <iostream>
-
+#include "statisticsRoot.hpp"
 #include "ball.hpp"
 
 
-
 int main() {
-  // constexpr float M_PI_F = static_cast<float> (M_PI);
   sf::Vector2f center(300, 450);
   float r1{200};
-  float r2{200};
-  float l{1200};
-  float y0{-80};
-  float theta0{-2.0f};
-  float v{4};
+  float r2{100};
+  float l{1000};
+  float y0{-40};
+  float theta0{0.7f};
+  float v{5.f};
   /*std::cout << "inserisci i parametri per la forma del biliardo:" << '\n';
   std::cout << "r1 = ";
   std::cin >> r1;
@@ -55,35 +53,38 @@ int main() {
     rangeValidity(theta0, -static_cast<float>(M_PI / 2),
                   static_cast<float>(M_PI / 2));*/
     sf::RenderWindow window(sf::VideoMode(1600, 900), "Biliardo Triangolare");
-    float m = std::tan(static_cast<float>(theta0));
+    float m = std::tan(theta0);
     ball b1(0, y0, m);
-    sf::CircleShape shape1(10.f);
-    shape1.setOrigin(10.f,10.f);
+    sf::CircleShape shape1(ball::getRadius());
+    shape1.setOrigin(10.f, 10.f);
     shape1.setPosition(center.x, center.y - y0);
     shape1.setFillColor(sf::Color::Cyan);
     float t{0};
     float h{0};
     float T{0};
-    // int finalDirection = b1.discard(center, h, T);
-    // std::cout << "finalDirection = " << finalDirection << '\n';
-    b1.dynamicsAnimated(center, upperBound, lowerBound, window, t, shape1, h, T, v);
-    //std::cout << "Parametri finali: " << '\n' << "1) Altezza di impatto: " << b1.getY() << '\n' << "2) Angolo di uscita: " << b1.getM() << '\n';
-    std::cout << "Parametri finali: X= " << b1.getX() << " Y= " << b1.getY() << " m= " <<b1.getM() << " direction = " << b1.getDirection() << '\n';
+    b1.dynamicsAnimated(center, upperBound, lowerBound, window, t, shape1, h, T,
+                        v);
+    std::cout << "Parametri finali: X= " << b1.getX() << " Y= " << b1.getY()
+              << " m= " << b1.getM() << " direction = " << b1.getDirection()
+              << '\n';
     ball b2(0, y0, m);
-    b2.dynamics(center, window, t,h, T);
-    std::cout << "Parametri finali discard: X= " << b2.getX() << " Y= " << b2.getY() << " m= " <<b2.getM() << " direction = " << b2.getDirection() << '\n';
-     std::cout << "Parametri finali: X= " << b1.getX() << " Y= " << b1.getY() << " m= " <<b1.getM() << " direction = " << b1.getDirection() << '\n';
+    b2.dynamics(h, T);
+    std::cout << "Parametri finali discard: X= " << b2.getX()
+              << " Y= " << b2.getY() << " m= " << b2.getM()
+              << " direction = " << b2.getDirection() << '\n';
 
   } else if (input == 2) {
-    int N{0};
-    bool isDiscarted;
-    float mean1{0.};
-    float mean2{0.};
-    float std1{0.};
-    float std2{0.};
-    std::cout << "Inserire il numero di tentativi:" << '\n';
+    int N{100000};
+    bool isDiscarted = true;
+    float meanY0{0.};
+    float meanTheta0{0.};
+    float stdY0{10.};
+    float stdTheta0{0.2f};
+    /*std::cout << "Inserire il numero di tentativi:" << '\n';
     std::cin >> N;
-    std::cout << "Vuoi scartare le palline che rimbalzano verso sinistra? Se sì, premere 1 altrimenti 0" <<'\n';
+    std::cout << "Vuoi scartare le palline che rimbalzano verso sinistra? Se "
+                 "sì, premere 1 altrimenti 0"
+              << '\n';
     std::cin >> isDiscarted;
     std::cout << "Inserire i parametri delle distribuzioni:" << '\n';
     std::cout << "Angolo iniziale:" << '\n';
@@ -96,11 +97,22 @@ int main() {
     std::cin >> mean2;
     std::cout << "Deviazione Standard:" << '\n';
     std::cin >> std2;
-    if(isDiscarted == 0){
-
-    }else{
-
+    if (isDiscarted == 0) {
+    } else {
+    }*/
+    std::array<double,8> statisticalParamters = statistics(N,meanY0,stdY0,meanTheta0,stdTheta0,isDiscarted);
+    std::cout << "i parametri richiesti sono:" << '\n';
+    std::array<std::string, 4> words = {" mean = ", " rms = ", " skewness = ", " kurtosis = "};
+    for(size_t i{0}; i < 4;i++){
+      std::string histName = "yf";
+      std::cout << histName << words[i] << statisticalParamters[i]<< '\n';
     }
+    std::cout << '\n'; 
+    for(size_t i{0}; i < 4;i++){
+      std::string histName = "thetaf";
+      std::cout << histName << words[i] << statisticalParamters[i+4] << '\n';
+    }
+
 
   } else {
     std::cout << "errore nel tipo di simulazione scelta. Riprovare: " << '\n'
