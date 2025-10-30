@@ -12,8 +12,8 @@ int main() {
   float r2{100};
   float l{800};
   float y0{0.f};
-  float theta0{0.7f};
-  float v{1};
+  float theta0{0.4f};
+  float v{4};
   /*std::cout << "inserisci i parametri per la forma del biliardo:" << '\n';
   std::cout << "r1 = ";
   std::cin >> r1;
@@ -52,7 +52,6 @@ int main() {
     std::cin >> theta0;
     rangeValidity(theta0, -static_cast<float>(M_PI / 2),
                   static_cast<float>(M_PI / 2));*/
-    sf::RenderWindow window(sf::VideoMode(1600, 900), "Biliardo Triangolare");
     rangeValidity(theta0, -static_cast<float>(M_PI/2),static_cast<float>(M_PI/2));
     float m = std::tan(theta0);
     ball b1(0, y0, m);
@@ -63,12 +62,12 @@ int main() {
     float t{0};
     float h{0};
     float T{0};
-    b1.dynamicsAnimated(upperBound ,lowerBound, t,h,T,
+    b1.dynamicsAnimated(upperBound, lowerBound,t,h,T,
                         v);
     
 
   } else if (input == 2) {
-    int N{100000};
+    int N{100000}; //sembrano non essere totalmente uguali le entries
     bool isDiscarted = true;
     float meanY0{0.};
     float meanTheta0{0.};

@@ -158,16 +158,16 @@ void ball::update(float collisionX, float collisionY) {
   m_m = helpM.getM();
   m_direction = helpDir.getDirection();
 }
-void ball::dynamicsAnimated(sf::Vertex upperBound[], 
-                            sf::Vertex lowerBound[], float &t,float &h, float &T,
+void ball::dynamicsAnimated(sf::Vertex upperBound[], sf::Vertex lowerBound[],float &t,float &h, float &T,
                    float v) {
                               
     sf::RenderWindow window(sf::VideoMode(m_window.x, m_window.y), "Biliardo Triangolare");
+    window.setFramerateLimit(60);  //questo per qualche motivo va ad uniformare la velocità della build con quellla del g++
     sf::CircleShape shape1(ball::getRadius());
     shape1.setOrigin(m_radius, m_radius);
     shape1.setPosition(m_center.x, m_center.y - m_y);
     shape1.setFillColor(sf::Color::Cyan);
-  for (int i{0}; i >= 0; i++) {
+    for (int i{0}; i >= 0; i++) {
     // std::cout << "pre selector" << '\n';
     bool selectedMotion = this->selector();
     // std::cout << "il moto selezionato è: " << selectedMotion << '\n';
@@ -207,7 +207,7 @@ void ball::dynamicsAnimated(sf::Vertex upperBound[],
       
       
       float scale = 1.0f / std::sqrt(1 + m_m * m_m);
-      float effective_t = h;
+      float effective_t = h*v;
       float angle = std::abs(std::atan(m_m));
       shape1.setPosition(m_center.x + positionX(effective_t),
                          m_center.y - positionY(effective_t));

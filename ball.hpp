@@ -63,8 +63,7 @@ class ball {
   // metodi
   
   void dynamics(float &h, float &T);
-  void dynamicsAnimated(sf::Vertex upperBound[],
-                        sf::Vertex lowerBound[], 
+  void dynamicsAnimated(sf::Vertex upperBound[], sf::Vertex lowerBound[],
                         float &t,float &h, float &T,
                         float v);
   // setters

@@ -56,18 +56,18 @@ inline std::array<double,8> statistics(int N, float meanY0, float stdY0, float m
     i++;
    
    }
-   TCanvas *c1 = new TCanvas("c1", "Both Distributions", 1000, 600);
-   c1->Divide(2,1);  
+   TCanvas c1 ("c1", "Both Distributions", 1000, 600);
+   c1.Divide(2,1);  
 
-   c1->cd(1);        
+   c1.cd(1);        
    yfHist.SetLineColor(kBlue);
    yfHist.Draw();
 
-  c1->cd(2);       
+  c1.cd(2);       
   thetafHist.SetLineColor(kRed);
   thetafHist.Draw();
 
-  c1->SaveAs("distributions.png");   
+  c1.SaveAs("distributions.png");   
   
   system("eog --single-window distributions.png");
    
