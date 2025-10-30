@@ -27,7 +27,6 @@ float ball::alfaMax() const {
 }
 
 void ball::updateDirection() {  // dubbio se tenere il secondo if
-  std::cout << "angleRespectNormal: " << angleRespectNormal() << '\n';
   float angle = angleRespectNormal();
 
   if (alfaMax() - angle > 0.) {
@@ -159,13 +158,22 @@ void ball::update(float collisionX, float collisionY) {
   m_m = helpM.getM();
   m_direction = helpDir.getDirection();
 }
-void ball::dynamicsAnimated(sf::Vector2f center, sf::Vertex upperBound[],
-                            sf::Vertex lowerBound[], sf::RenderWindow &window,
-                            float &t, sf::CircleShape &shape1, float &h,
-                            float &T, float v) {
+void ball::dynamicsAnimated(sf::Vertex upperBound[], 
+                            sf::Vertex lowerBound[], float &t,float &h, float &T,
+                   float v) {
+                              
+    sf::RenderWindow window(sf::VideoMode(m_window.x, m_window.y), "Biliardo Triangolare");
+    sf::CircleShape shape1(ball::getRadius());
+    shape1.setOrigin(m_radius, m_radius);
+    shape1.setPosition(m_center.x, m_center.y - m_y);
+    shape1.setFillColor(sf::Color::Cyan);
   for (int i{0}; i >= 0; i++) {
+    // std::cout << "pre selector" << '\n';
     bool selectedMotion = this->selector();
-
+    // std::cout << "il moto selezionato è: " << selectedMotion << '\n';
+    // std::cout << "post selector" << '\n';
+    // float radius = shape1.getRadius() / 2;
+    // std::cout << "l'extra è:" << extra << '\n';
     sf::Vector2f impact;
     if (selectedMotion == 1) {
       ball toUpdate(m_x, m_y, m_m, m_direction);
@@ -185,11 +193,6 @@ void ball::dynamicsAnimated(sf::Vector2f center, sf::Vertex upperBound[],
       T = h;
       t = 0;
     }
-    sf::CircleShape Impact (5.f);
-    Impact.setFillColor(sf::Color::Red);
-    Impact.setPosition(center.x+ impact.x,center.y-impact.y);
-    sf::CircleShape Pilot(5.f);
-    Pilot.setFillColor(sf::Color::Yellow);
     
     while (window.isOpen()) {
       if (m_direction > 0) {
@@ -201,34 +204,31 @@ void ball::dynamicsAnimated(sf::Vector2f center, sf::Vertex upperBound[],
       while (window.pollEvent(event)) {
         if (event.type == sf::Event::Closed) window.close();
       }
-
+      
+      
       float scale = 1.0f / std::sqrt(1 + m_m * m_m);
-      float effective_t = h*v;
+      float effective_t = h;
       float angle = std::abs(std::atan(m_m));
-      shape1.setPosition(center.x + positionX(effective_t),
-                         center.y - positionY(effective_t));
+      shape1.setPosition(m_center.x + positionX(effective_t),
+                         m_center.y - positionY(effective_t));
+      
 
       float newX = positionX(effective_t);
       float newY = positionY(effective_t);
-      Pilot.setPosition(center.x + positionX(effective_t)+ static_cast<float>(m_direction) * m_radius *
-                               std::cos(angle),center.y - positionY(effective_t)-(static_cast<float>(sgn(normal() * (m_r1 - m_r2))) *
-                               m_radius * std::sin(angle)));
 
       window.clear();
       window.draw(upperBound, 2, sf::Lines);
       window.draw(lowerBound, 2, sf::Lines);
       window.draw(shape1);
-      window.draw(Impact);
-      window.draw(Pilot);
+      
 
       window.display();
       bool isCollision =
-          std::abs((newX + static_cast<float>(m_direction) * m_radius *
-                               std::cos(angle)) -
+          std::abs((newX + sgn(m_direction) * m_radius * std::cos(angle)) -
                    impact.x) < m_errorTolerance &&
-          std::abs((newY + static_cast<float>(sgn(normal() * (m_r1 - m_r2))) *
-                               m_radius * std::sin(angle)) -
+          std::abs((newY + sgn(normal())*sgn(m_r1-m_r2) * m_radius * std::sin(angle)) -
                    impact.y) < m_errorTolerance;
+    
 
       float yFinalCollision;
       float xFinalCollision;
@@ -241,18 +241,20 @@ void ball::dynamicsAnimated(sf::Vector2f center, sf::Vertex upperBound[],
       }
       bool finalCollision;
       if (m_direction > 0) {
-        finalCollision = std::abs(newX - m_l) < m_errorTolerance &&
-                         std::abs(newY - yFinalCollision) < m_errorTolerance;
+        finalCollision =
+            std::abs(newX - m_l) < m_errorTolerance && std::abs(newY - yFinalCollision) < m_errorTolerance;
       } else {
-        finalCollision = std::abs(newX - 0.) < m_errorTolerance &&
-                         std::abs(newY - yFinalCollision) < m_errorTolerance;
+        finalCollision =
+            std::abs(newX - 0.) < m_errorTolerance && std::abs(newY - yFinalCollision) < m_errorTolerance;
       }
-
+      
       if (selectedMotion == 1 && isCollision) {
+        
         update(newX, newY);
         break;
       } else if (selectedMotion == 0 && finalCollision) {
-        ball bTemp(xFinalCollision, yFinalCollision, m_m, m_direction);
+        
+        ball bTemp (xFinalCollision,yFinalCollision,m_m,m_direction);
         *this = bTemp;
         while (window.isOpen()) {
           sf::Event event2;
@@ -323,7 +325,7 @@ void ball::dynamics(float &h, float &T) {
       bool isCollision = std::abs((newX + static_cast<float>(m_direction) *
                                               m_radius * std::cos(angle)) -
                                   impact.x) < m_errorTolerance &&
-                         std::abs((newY + sgn(normal() * (m_r1 - m_r2)) *
+                         std::abs((newY + sgn(normal()) * sgn(m_r1 - m_r2) *
                                               m_radius * std::sin(angle)) -
                                   impact.y) < m_errorTolerance;
 
@@ -357,3 +359,6 @@ void ball::dynamics(float &h, float &T) {
     }
   }
 }
+
+ 
+       

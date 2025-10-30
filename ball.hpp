@@ -4,31 +4,35 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Window.hpp>
+#include <cmath>
 
-
-// se avessi una classe globale che include ball potrei fare dei controlli
-// migliori (avrei accesso a center e a windows)
 template <typename T>
-inline void rangeValidity(T value, T min, T max) {  //[] estremi compresi
+inline void rangeValidity(T value, T min, T max) {  
+  if (std::isnan(value)) {
+        throw std::out_of_range("Value is NaN");
+    }
   if (value >= min && value <= max) {
     return;
   }
   throw std::out_of_range("Value out of range");
 }
+
 template <typename T>
-inline void rangeValidity(T value, T min) {  //[] estremi compresi
+inline void rangeValidity(T value, T min) { 
+  if (std::isnan(value)) {
+        throw std::out_of_range("Value is NaN");
+    }
   if (value > min) {
     return;
   }
   throw std::out_of_range("Value out of range");
 }
 
-inline float sgn(float x) { return static_cast<float>(x >= 0 ? 1 : -1); }
+inline float sgn(float x) { return static_cast<float>(x >= 0 ? 1 : -1); } //l'idea è che va anche se ci metto un double
 inline float sgn(int x) { return static_cast<float>(x >= 0 ? 1 : -1); }
 
 class ball {
  public:
-  // costruttori
   ball(float _x, float _y, float _m,
        int _direction) {  // non ho capito benissimo cosa fa
     // if constexpr (!std::is_same_v<A, int>) {
@@ -59,9 +63,9 @@ class ball {
   // metodi
   
   void dynamics(float &h, float &T);
-  void dynamicsAnimated(sf::Vector2f center, sf::Vertex upperBound[],
-                        sf::Vertex lowerBound[], sf::RenderWindow &window,
-                        float &t, sf::CircleShape &shape1, float &h, float &T,
+  void dynamicsAnimated(sf::Vertex upperBound[],
+                        sf::Vertex lowerBound[], 
+                        float &t,float &h, float &T,
                         float v);
   // setters
   static void r1(float _r1) {
@@ -118,6 +122,7 @@ class ball {
   bool selector() const;
   float normal() const;
   float alfaMax() const;
+  
 
   float m_x;
   float m_y;

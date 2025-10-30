@@ -10,10 +10,10 @@ int main() {
   sf::Vector2f center(300, 450);
   float r1{200};
   float r2{100};
-  float l{1000};
-  float y0{-40};
+  float l{800};
+  float y0{0.f};
   float theta0{0.7f};
-  float v{5.f};
+  float v{1};
   /*std::cout << "inserisci i parametri per la forma del biliardo:" << '\n';
   std::cout << "r1 = ";
   std::cin >> r1;
@@ -53,6 +53,7 @@ int main() {
     rangeValidity(theta0, -static_cast<float>(M_PI / 2),
                   static_cast<float>(M_PI / 2));*/
     sf::RenderWindow window(sf::VideoMode(1600, 900), "Biliardo Triangolare");
+    rangeValidity(theta0, -static_cast<float>(M_PI/2),static_cast<float>(M_PI/2));
     float m = std::tan(theta0);
     ball b1(0, y0, m);
     sf::CircleShape shape1(ball::getRadius());
@@ -62,16 +63,9 @@ int main() {
     float t{0};
     float h{0};
     float T{0};
-    b1.dynamicsAnimated(center, upperBound, lowerBound, window, t, shape1, h, T,
+    b1.dynamicsAnimated(upperBound ,lowerBound, t,h,T,
                         v);
-    std::cout << "Parametri finali: X= " << b1.getX() << " Y= " << b1.getY()
-              << " m= " << b1.getM() << " direction = " << b1.getDirection()
-              << '\n';
-    ball b2(0, y0, m);
-    b2.dynamics(h, T);
-    std::cout << "Parametri finali discard: X= " << b2.getX()
-              << " Y= " << b2.getY() << " m= " << b2.getM()
-              << " direction = " << b2.getDirection() << '\n';
+    
 
   } else if (input == 2) {
     int N{100000};
