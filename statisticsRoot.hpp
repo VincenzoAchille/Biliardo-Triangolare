@@ -34,10 +34,12 @@ inline std::array<double,8> statistics(int N, float meanY0, float stdY0, float m
       
       continue;}
     float m = std::tan(static_cast<float>(theta0Rand));
-   
     ball randomBall(0.f,y0Rand,m);
-    
+    std::cout << "inizializzazione completa per la pallina" << i <<'\n';
+    std::cout << randomBall.getX() <<", " << randomBall.getY() << ", " << std::atan(randomBall.getM()) << '\n';
+    std::cout << "chiamata Dyanamics" << '\n';
     randomBall.ballDynamics();
+    std::cout << "terminata Dynamics" << '\n';
     if(isDiscarded == true){
     if(randomBall.getDirection() == 1){
       yfHist.Fill(randomBall.getY());
@@ -45,14 +47,17 @@ inline std::array<double,8> statistics(int N, float meanY0, float stdY0, float m
     thetafHist.Fill(thetaf);
 
     }}else{
+      std::cout << "entrato in non scarto " << '\n';
       yfHist.Fill(randomBall.getY());
     float thetaf = std::atan(randomBall.getM());
     thetafHist.Fill(thetaf);
+   
     }
     i++;
    
    
    }
+   
    TCanvas c1 ("c1", "Both Distributions", 1000, 600);
    c1.Divide(2,1);  
 

@@ -9,11 +9,12 @@
 int main() {
   sf::Vector2f center(300, 450);
   float r1{200};
-  float r2{200};
+  float r2{100};
   float l{1000};
-  float y0{0.f};
-  float theta0{-0.3f};
+  float y0{-10.2696f};
+  float theta0{-0.574785f};
   float animationSpeed{3};
+  ball::radius(10.f);
   /*std::cout << "inserisci i parametri per la forma del biliardo:" << '\n';
   std::cout << "r1 = ";
   std::cin >> r1;
@@ -24,9 +25,6 @@ int main() {
   ball::r1(r1);
   ball::r2(r2);
   ball::l(l);
-  // parte di SFML (setting)
-  
-
   std::cout << "selezionare il tipo di simulazione. " << '\n'
             << "per un lancio singolo premere 1" << '\n'
             << "per N lanci premere 2" << '\n';
@@ -46,12 +44,14 @@ int main() {
     ball b1(0, y0, m);
     b1.ballDynamicsAnimated(
                         animationSpeed);
+    //std::cout << "yf = " << b1.getY() << "theta0 = " << std::atan(b1.getM()) << '\n';
+    b1.ballDynamics();
     std::cout << "yf = " << b1.getY() << "theta0 = " << std::atan(b1.getM()) << '\n';
     
 
   } else if (input == 2) {
-    int N{100000}; //sembrano non essere totalmente uguali le entries
-    bool isDiscarted = true;
+    int N{10000}; //sembrano non essere totalmente uguali le entries
+    bool isDiscarted = false;
     float meanY0{0.};
     float meanTheta0{0.};
     float stdY0{10.};

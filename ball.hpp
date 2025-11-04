@@ -14,7 +14,7 @@ inline void rangeValidity(T value, T min, T max) {
   if (value >= min && value <= max) {
     return;
   }
-  throw std::out_of_range("Value out of range");
+  throw std::out_of_range("Value out of range" );
 }
 
 template <typename T>
@@ -37,13 +37,14 @@ class ball {
        int _direction) {  
     float maxY = std::max(m_r1, m_r2);
 
-    rangeValidity(_x, -m_errorTolerance, m_l + +m_errorTolerance);
-    /*if (std::abs(_x) < 1e-3) {
-      rangeValidity(_y, -m_r1, m_r1);
+    rangeValidity(_x, -1.f, m_l + 1.f);
+    
+    if (std::abs(_x) < 1e-3 && m_direction == 1) {
+      rangeValidity(_y, -m_r1 , m_r1);
     } else {
-      rangeValidity(_y, -maxY + m_errorTolerance, maxY + m_errorTolerance);
-    }*/
-    rangeValidity(_y, -maxY + m_radius/2, maxY - m_radius/2);
+      rangeValidity(_y, -maxY , maxY );
+    }
+    
   
 
     if (_direction != 1 && _direction != -1) {
