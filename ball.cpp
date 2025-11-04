@@ -12,8 +12,8 @@ float ball::m_r1 = 1.f;
 float ball::m_r2 = 1.f;
 sf::Vector2f ball::m_center(300, 450);
 sf::Vector2i ball::m_window(1600, 900);
-float ball::m_errorTolerance = 5.f;
-float ball::m_radius = 10.f;
+float ball::m_errorTolerance = 2.f;
+float ball::m_radius = 0.1f;
 
 ball &ball::operator=(const ball &b) {  //questo potrebbe essere supefluo
   m_x = b.m_x;
@@ -246,11 +246,13 @@ void ball::ballDynamicsAnimated(float v) {
             std::abs(newX - 0.) < m_errorTolerance && std::abs(newY - yFinalCollision) < m_errorTolerance;
       }
       
-      if (selectedMotion == 1 && isCollision) {
-        
-        update(newX, newY);
+      if (selectedMotion && isCollision) {
+        std::cout << std::atan(m_m) << '\n';
+        update(impact.x - sgn(m_direction) * m_radius * std::cos(angle), impact.y - sgn(normal())*sgn(m_r1-m_r2) * m_radius * std::sin(angle));
+        std::cout << "newY= " << newY << '\n';
+        std::cout << "impactY= " << impact.y + sgn(normal())*sgn(m_r1-m_r2) * m_radius * std::sin(angle) << '\n';
         break;
-      } else if (selectedMotion == 0 && finalCollision) {
+      } else if (!selectedMotion && finalCollision) {
         
         ball bTemp (xFinalCollision,yFinalCollision,m_m,m_direction);
         *this = bTemp;
@@ -286,10 +288,12 @@ void ball::ballDynamicsAnimated(float v) {
 }
 
 void ball::ballDynamics() {
+  float h = 0.f;
+  float T = 0.f;
+  std::cout << "entrato in ballDyamics" << '\n';
   for (int i{0}; i >= 0; i++) {
     float j = 0.f;
-    float h = 0.f;
-    float T = 0.f;
+    
 
     bool selectedMotion = this->isColliding();
     sf::Vector2f impact;
@@ -312,7 +316,7 @@ void ball::ballDynamics() {
       j = 0;
     }
     float scale = 1.0f / std::sqrt(1 + m_m * m_m);
-    while (j >= 0) {
+    while (true) {
       if (m_direction > 0) {
         h = j;
       } else {
@@ -322,6 +326,13 @@ void ball::ballDynamics() {
       float angle = std::abs(std::atan(m_m));
       float newX = positionX(h);
       float newY = positionY(h);
+      float debugX = std::abs((newX + static_cast<float>(m_direction) *
+                                              m_radius * std::cos(angle)) -
+                                  impact.x);
+      float debugY = std::abs((newY + sgn(normal()) * sgn(m_r1 - m_r2) *
+                                              m_radius * std::sin(angle)) -
+                                  impact.y);
+      
       bool isCollision = std::abs((newX + static_cast<float>(m_direction) *
                                               m_radius * std::cos(angle)) -
                                   impact.x) < m_errorTolerance &&
@@ -346,10 +357,13 @@ void ball::ballDynamics() {
         finalCollision = std::abs(newX - 0.) < m_errorTolerance &&
                          std::abs(newY - yFinalCollision) < m_errorTolerance;
       }
-      if (selectedMotion == 1 && isCollision) {
+      if (selectedMotion && isCollision) {
+        //std::cout << "urto triggerato" << '\n';
+        std::cout << "angolo = " << std::atan(m_m) << '\n';
         update(newX, newY);
         break;
       } else if (selectedMotion == 0 && finalCollision) {
+        //std::cout << "fine triggerata" << '\n';
         ball bTemp(xFinalCollision, yFinalCollision, m_m, m_direction);
         *this = bTemp;
         return;

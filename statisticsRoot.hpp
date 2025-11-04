@@ -38,7 +38,6 @@ inline std::array<double,8> statistics(int N, float meanY0, float stdY0, float m
     ball randomBall(0.f,y0Rand,m);
     
     randomBall.ballDynamics();
-    
     if(isDiscarded == true){
     if(randomBall.getDirection() == 1){
       yfHist.Fill(randomBall.getY());
@@ -51,6 +50,7 @@ inline std::array<double,8> statistics(int N, float meanY0, float stdY0, float m
     thetafHist.Fill(thetaf);
     }
     i++;
+   
    
    }
    TCanvas c1 ("c1", "Both Distributions", 1000, 600);

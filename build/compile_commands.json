@@ -8,5 +8,15 @@
   "directory": "/home/vincenzo03/FinalProject/build",
   "command": "/usr/bin/g++ -DROOT_SUPPORT_CLAD -isystem /home/vincenzo03/root/include  -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Wshadow -Wimplicit-fallthrough -Wextra-semi -Wold-style-cast -fno-omit-frame-pointer -D_GLIBCXX_ASSERTIONS -D_GLIBCXX_SANITIZE_STD_ALLOCATOR -g -fsanitize=address,undefined -fsanitize=address,undefined -std=c++20 -o CMakeFiles/biliardo_triangolare.dir/ball.cpp.o -c /home/vincenzo03/FinalProject/ball.cpp",
   "file": "/home/vincenzo03/FinalProject/ball.cpp"
+},
+{
+  "directory": "/home/vincenzo03/FinalProject/build",
+  "command": "/usr/bin/g++  -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Wshadow -Wimplicit-fallthrough -Wextra-semi -Wold-style-cast -fno-omit-frame-pointer -D_GLIBCXX_ASSERTIONS -D_GLIBCXX_SANITIZE_STD_ALLOCATOR -g -fsanitize=address,undefined -fsanitize=address,undefined -std=c++20 -o CMakeFiles/test.t.dir/test.cpp.o -c /home/vincenzo03/FinalProject/test.cpp",
+  "file": "/home/vincenzo03/FinalProject/test.cpp"
+},
+{
+  "directory": "/home/vincenzo03/FinalProject/build",
+  "command": "/usr/bin/g++  -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Wshadow -Wimplicit-fallthrough -Wextra-semi -Wold-style-cast -fno-omit-frame-pointer -D_GLIBCXX_ASSERTIONS -D_GLIBCXX_SANITIZE_STD_ALLOCATOR -g -fsanitize=address,undefined -fsanitize=address,undefined -std=c++20 -o CMakeFiles/test.t.dir/ball.cpp.o -c /home/vincenzo03/FinalProject/ball.cpp",
+  "file": "/home/vincenzo03/FinalProject/ball.cpp"
 }
 ]

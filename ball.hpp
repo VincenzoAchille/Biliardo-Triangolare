@@ -34,18 +34,17 @@ inline float sgn(int x) { return static_cast<float>(x >= 0 ? 1 : -1); }
 class ball {
  public:
   ball(float _x, float _y, float _m,
-       int _direction) {  // non ho capito benissimo cosa fa
-    // if constexpr (!std::is_same_v<A, int>) {
-    //   throw std::invalid_argument("Direction must be int type");
-    // }
+       int _direction) {  
     float maxY = std::max(m_r1, m_r2);
 
     rangeValidity(_x, -m_errorTolerance, m_l + +m_errorTolerance);
-    if (std::abs(_x) < 1e-3) {
+    /*if (std::abs(_x) < 1e-3) {
       rangeValidity(_y, -m_r1, m_r1);
     } else {
-      rangeValidity(_y, -(maxY + m_errorTolerance), maxY + m_errorTolerance);
-    }
+      rangeValidity(_y, -maxY + m_errorTolerance, maxY + m_errorTolerance);
+    }*/
+    rangeValidity(_y, -maxY + m_radius/2, maxY - m_radius/2);
+  
 
     if (_direction != 1 && _direction != -1) {
       throw std::out_of_range("Value out of range");
@@ -78,6 +77,9 @@ class ball {
   static void l(float _l) {
     rangeValidity(_l, 0.f, static_cast<float>(m_window.x) - m_center.x);
     m_l = _l;
+  }
+  static void radius(float _radius){
+    m_radius = _radius;
   }
 
   static void center(sf::Vector2f _center) {

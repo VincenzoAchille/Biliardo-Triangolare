@@ -9,11 +9,11 @@
 int main() {
   sf::Vector2f center(300, 450);
   float r1{200};
-  float r2{100};
-  float l{800};
-  float y0{-80.f};
-  float theta0{1.1f};
-  float animationSpeed{4};
+  float r2{200};
+  float l{1000};
+  float y0{0.f};
+  float theta0{-0.3f};
+  float animationSpeed{3};
   /*std::cout << "inserisci i parametri per la forma del biliardo:" << '\n';
   std::cout << "r1 = ";
   std::cin >> r1;
@@ -46,6 +46,7 @@ int main() {
     ball b1(0, y0, m);
     b1.ballDynamicsAnimated(
                         animationSpeed);
+    std::cout << "yf = " << b1.getY() << "theta0 = " << std::atan(b1.getM()) << '\n';
     
 
   } else if (input == 2) {

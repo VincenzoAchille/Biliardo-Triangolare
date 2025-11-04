@@ -1,14 +1,7 @@
 # ninja log v5
-1	1814	1762250262361364411	CMakeFiles/biliardo_triangolare.dir/ball.cpp.o	a69b7f8902949033
-0	2664	1762250263209364703	CMakeFiles/biliardo_triangolare.dir/main.cpp.o	ed417e5d4ec63f34
-2664	3254	1762250263797364906	biliardo_triangolare	58f2dcd78f0aa9ee
-2	2903	1762250297737367867	CMakeFiles/biliardo_triangolare.dir/main.cpp.o	ed417e5d4ec63f34
-2904	3369	1762250298197367877	biliardo_triangolare	58f2dcd78f0aa9ee
-3	2792	1762250379413374450	CMakeFiles/biliardo_triangolare.dir/main.cpp.o	ed417e5d4ec63f34
-2792	3231	1762250379849374475	biliardo_triangolare	58f2dcd78f0aa9ee
-2	1617	1762250780713358947	CMakeFiles/biliardo_triangolare.dir/ball.cpp.o	a69b7f8902949033
-2	2336	1762250781433359321	CMakeFiles/biliardo_triangolare.dir/main.cpp.o	ed417e5d4ec63f34
-2336	2793	1762250781885359555	biliardo_triangolare	58f2dcd78f0aa9ee
-3	1806	1762251436369347571	CMakeFiles/biliardo_triangolare.dir/ball.cpp.o	a69b7f8902949033
-3	2453	1762251437017347607	CMakeFiles/biliardo_triangolare.dir/main.cpp.o	ed417e5d4ec63f34
-2453	3030	1762251437585347638	biliardo_triangolare	58f2dcd78f0aa9ee
+2434	2927	1762275207479961135	test.t	400f54d88363f55
+3	7328	1762273470163953525	CMakeFiles/test.t.dir/test.cpp.o	1e3588bf612c0021
+3	2434	1762275206991961126	CMakeFiles/test.t.dir/ball.cpp.o	d2867b588e5cd630
+2438	3078	1762275207631961138	biliardo_triangolare	58f2dcd78f0aa9ee
+14	3125	1762273725043962354	CMakeFiles/biliardo_triangolare.dir/main.cpp.o	ed417e5d4ec63f34
+3	2438	1762275206995961126	CMakeFiles/biliardo_triangolare.dir/ball.cpp.o	a69b7f8902949033
