@@ -202,7 +202,7 @@ TEST_CASE("Controllo Setters General" * doctest::skip()) {
     float T{0.f};
     for (int i{0}; i < 6; i++) {
     ball test(0.,y0[i],std::tan(theta0[i]));
-     test.dynamics(ball::getCenter(),window,t,h,T);
+     test.ballDynamics(ball::getCenter(),window,t,h,T);
      CHECK(std::abs(test.getX()- finalX[i]) < 5.);
      CHECK(std::abs(test.getY()- finalY[i]) < 5.);
      CHECK(std::abs(test.getM()- finalM[i]) < 5.);
@@ -224,7 +224,7 @@ TEST_CASE("Controllo Setters General" * doctest::skip()) {
     float T{0.f};
     for (int i{0}; i < 6; i++) {
      ball test(0.,y0[i],std::tan(theta0[i]));
-     test.dynamics(ball::getCenter(),window,t,h,T);
+     test.ballDynamics(ball::getCenter(),window,t,h,T);
      CHECK(std::abs(test.getX()- finalX[i]) < 5.);
      CHECK(std::abs(test.getY()- finalY[i]) < 5.);
      CHECK(std::abs(test.getM()- finalM[i]) < 5.);
@@ -244,7 +244,7 @@ TEST_CASE("Controllo Setters General" * doctest::skip()) {
     float T{0.f};
     for (int i{0}; i < 6; i++) {
      ball test(0.,y0[i],std::tan(theta0[i]));
-     test.dynamics(ball::getCenter(),window,t,h,T);
+     test.ballDynamics(ball::getCenter(),window,t,h,T);
      CHECK(std::abs(test.getX()- finalX[i]) < 5.);
      CHECK(std::abs(test.getY()- finalY[i]) < 5.);
      CHECK(std::abs(test.getM()- finalM[i]) < 5.);

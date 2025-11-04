@@ -62,9 +62,9 @@ class ball {
       : m_x(b.m_x), m_y(b.m_y), m_m(b.m_m), m_direction(b.m_direction) {}
   // metodi
   
-  void dynamics(float &h, float &T);
-  void dynamicsAnimated(sf::Vertex upperBound[], sf::Vertex lowerBound[],
-                        float &t,float &h, float &T,
+  void ballDynamics();
+  void ballDynamicsAnimated(
+                        
                         float v);
   // setters
   static void r1(float _r1) {
@@ -97,7 +97,7 @@ class ball {
   static float getl() { return m_l; }
   static float getErrorTolerance() { return m_errorTolerance; }
   static float getRadius() { return m_radius; }
-  static float mGiac() { return std::abs(m_l / (m_r2 - m_r1)); }
+  static float normalModulus() { return std::abs(m_l / (m_r2 - m_r1)); }
   static sf::Vector2f getCenter() { return m_center; }
   static sf::Vector2i getWindow() { return m_window; }
   float getX() const { return m_x; }
@@ -111,17 +111,18 @@ class ball {
   ~ball() {}
 
  private:
-  void updateXY();
+  void collisionPosition();
   void updateDirection();
   float positionX(float t) const { return t; }
   float positionY(float t) const { return m_m * (t - m_x) + m_y; }
   void update(float collisionX, float collisionY);
   void updateM();
-  float angleRespectNormal() const;
-  bool selector() const;
+  float angleWithNormal() const;
+  bool isColliding() const;
   float normal() const;
   float alfaMax() const;
-  
+  sf::VertexArray upperBound();
+  sf::VertexArray lowerBound();
 
   float m_x;
   float m_y;

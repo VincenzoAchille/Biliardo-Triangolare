@@ -11,9 +11,9 @@ int main() {
   float r1{200};
   float r2{100};
   float l{800};
-  float y0{0.f};
-  float theta0{0.4f};
-  float v{4};
+  float y0{-80.f};
+  float theta0{1.1f};
+  float animationSpeed{4};
   /*std::cout << "inserisci i parametri per la forma del biliardo:" << '\n';
   std::cout << "r1 = ";
   std::cin >> r1;
@@ -25,18 +25,7 @@ int main() {
   ball::r2(r2);
   ball::l(l);
   // parte di SFML (setting)
-  sf::Vertex upperBound[]{
-      sf::Vertex(sf::Vector2f(center.x, center.y - ball::getr1()),
-                 sf::Color::White),
-      sf::Vertex(
-          sf::Vector2f(center.x + ball::getl(), center.y - ball::getr2()),
-          sf::Color::White)};
-  sf::Vertex lowerBound[] = {
-      sf::Vertex(sf::Vector2f(center.x, center.y + ball::getr1()),
-                 sf::Color::Red),
-      sf::Vertex(
-          sf::Vector2f(center.x + ball::getl(), center.y + ball::getr2()),
-          sf::Color::Red)};
+  
 
   std::cout << "selezionare il tipo di simulazione. " << '\n'
             << "per un lancio singolo premere 1" << '\n'
@@ -55,15 +44,8 @@ int main() {
     rangeValidity(theta0, -static_cast<float>(M_PI/2),static_cast<float>(M_PI/2));
     float m = std::tan(theta0);
     ball b1(0, y0, m);
-    sf::CircleShape shape1(ball::getRadius());
-    shape1.setOrigin(10.f, 10.f);
-    shape1.setPosition(center.x, center.y - y0);
-    shape1.setFillColor(sf::Color::Cyan);
-    float t{0};
-    float h{0};
-    float T{0};
-    b1.dynamicsAnimated(upperBound, lowerBound,t,h,T,
-                        v);
+    b1.ballDynamicsAnimated(
+                        animationSpeed);
     
 
   } else if (input == 2) {

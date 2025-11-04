@@ -8,7 +8,7 @@
 #include <algorithm>
 //problema con valori limite
 inline int calculateBins(int N) {
-     int bins = static_cast<int>(3.0 * sqrt(N));
+     int bins = static_cast<int>(std::sqrt(N));
     return bins;}
 
 inline std::array<double,8> statistics(int N, float meanY0, float stdY0, float meanTheta0, float stdTheta0,bool isDiscarded) {
@@ -20,9 +20,6 @@ inline std::array<double,8> statistics(int N, float meanY0, float stdY0, float m
   float estremi = std::max(ball::getr1(), ball::getr2());
   TH1F yfHist ("y finali", "", calculateBins(N), -estremi, estremi);
   TH1F thetafHist ("angoli finali", "", calculateBins(N), -M_PI/2, M_PI/2);
-  
-  float h{0};
-  float T{0};
   
   int i{0};
   
@@ -40,7 +37,7 @@ inline std::array<double,8> statistics(int N, float meanY0, float stdY0, float m
    
     ball randomBall(0.f,y0Rand,m);
     
-    randomBall.dynamics(h,T);
+    randomBall.ballDynamics();
     
     if(isDiscarded == true){
     if(randomBall.getDirection() == 1){

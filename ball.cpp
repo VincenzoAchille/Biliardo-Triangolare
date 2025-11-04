@@ -2,6 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/CircleShape.hpp>
+#include <SFML/Graphics/VertexArray.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Window.hpp>
 #include <cmath>
@@ -14,7 +15,7 @@ sf::Vector2i ball::m_window(1600, 900);
 float ball::m_errorTolerance = 5.f;
 float ball::m_radius = 10.f;
 
-ball &ball::operator=(const ball &b) {
+ball &ball::operator=(const ball &b) {  //questo potrebbe essere supefluo
   m_x = b.m_x;
   m_y = b.m_y;
   m_m = b.m_m;
@@ -23,15 +24,16 @@ ball &ball::operator=(const ball &b) {
 }
 
 float ball::alfaMax() const {
-  return static_cast<float>(std::abs(atan(1 / mGiac())));
+  return static_cast<float>(std::abs(atan(1 / normalModulus())));
 }
 
 void ball::updateDirection() {  // dubbio se tenere il secondo if
-  float angle = angleRespectNormal();
+  float angle = angleWithNormal();
 
   if (alfaMax() - angle > 0.) {
     m_direction = -m_direction;
   }
+  //il caso alfaMax() -angle == 0) è delicato perchè è un moto con m_direction == 0
   /*if (alfaMax() - angle < 0.) { c'è un warning
     m_direction = m_direction;
   }*/
@@ -71,10 +73,10 @@ float ball::normal() const {
   }
   //
   if (normalDirection > 0) {
-    return std::abs(mGiac());
+    return std::abs(normalModulus());
 
   } else {
-    return -std::abs(mGiac());
+    return -std::abs(normalModulus());
   }
 }
 
@@ -85,7 +87,7 @@ void ball::updateM() {
 
   } else {
     float N = normal();
-    float mAngle = static_cast<float>(std::tan(angleRespectNormal()));
+    float mAngle = static_cast<float>(std::tan(angleWithNormal()));
     newM = -(mAngle + N) / (N * mAngle - 1);
     if (std::abs(newM - m_m) < 1e-3) {
       newM = -(-mAngle + N) /
@@ -97,7 +99,7 @@ void ball::updateM() {
   }
 }
 // den == 0
-float ball::angleRespectNormal() const{
+float ball::angleWithNormal() const{
   if (std::abs(m_r1 - m_r2) < 1e-6) {
     float b = std::abs(std::atan(1 / m_m));
     return b;
@@ -117,7 +119,7 @@ float ball::angleRespectNormal() const{
 }
 
 // ha senso mettere una guardia sul denominatore? tanto non si verifica mai
-void ball::updateXY() {
+void ball::collisionPosition() {
   float A = normal();
 
   if (A >= 0) {
@@ -132,7 +134,7 @@ void ball::updateXY() {
     m_y = m_m * (m_x - xu) + m_y;
   }
 }
-bool ball::selector()const {
+bool ball::isColliding()const {
   {
     if ((m_m * (m_l - m_x) + m_y > -m_r2 && m_m * (m_l - m_x) + m_y < m_r2) &&
         m_direction > 0) {
@@ -158,26 +160,22 @@ void ball::update(float collisionX, float collisionY) {
   m_m = helpM.getM();
   m_direction = helpDir.getDirection();
 }
-void ball::dynamicsAnimated(sf::Vertex upperBound[], sf::Vertex lowerBound[],float &t,float &h, float &T,
-                   float v) {
-                              
-    sf::RenderWindow window(sf::VideoMode(m_window.x, m_window.y), "Biliardo Triangolare");
+void ball::ballDynamicsAnimated(float v) {
+    float t{0};
+    float T{0};
+    float h{0};
+    sf::RenderWindow window(sf::VideoMode(static_cast<unsigned int>(m_window.x), static_cast<unsigned int>(m_window.y)), "Biliardo Triangolare");
     window.setFramerateLimit(60);  //questo per qualche motivo va ad uniformare la velocità della build con quellla del g++
     sf::CircleShape shape1(ball::getRadius());
     shape1.setOrigin(m_radius, m_radius);
     shape1.setPosition(m_center.x, m_center.y - m_y);
     shape1.setFillColor(sf::Color::Cyan);
     for (int i{0}; i >= 0; i++) {
-    // std::cout << "pre selector" << '\n';
-    bool selectedMotion = this->selector();
-    // std::cout << "il moto selezionato è: " << selectedMotion << '\n';
-    // std::cout << "post selector" << '\n';
-    // float radius = shape1.getRadius() / 2;
-    // std::cout << "l'extra è:" << extra << '\n';
+    bool selectedMotion = this->isColliding();
     sf::Vector2f impact;
     if (selectedMotion == 1) {
       ball toUpdate(m_x, m_y, m_m, m_direction);
-      toUpdate.updateXY();
+      toUpdate.collisionPosition();
       impact.x = toUpdate.getX();
       impact.y = toUpdate.getY();
     } else {
@@ -217,8 +215,8 @@ void ball::dynamicsAnimated(sf::Vertex upperBound[], sf::Vertex lowerBound[],flo
       float newY = positionY(effective_t);
 
       window.clear();
-      window.draw(upperBound, 2, sf::Lines);
-      window.draw(lowerBound, 2, sf::Lines);
+      window.draw(upperBound());
+      window.draw(lowerBound());
       window.draw(shape1);
       
 
@@ -272,8 +270,8 @@ void ball::dynamicsAnimated(sf::Vertex upperBound[], sf::Vertex lowerBound[],flo
             }
           }
           window.clear();
-          window.draw(upperBound, 2, sf::Lines);
-          window.draw(lowerBound, 2, sf::Lines);
+          window.draw(upperBound());
+          window.draw(lowerBound());
           window.draw(shape1);
           window.display();
         }
@@ -287,15 +285,17 @@ void ball::dynamicsAnimated(sf::Vertex upperBound[], sf::Vertex lowerBound[],flo
   }
 }
 
-void ball::dynamics(float &h, float &T) {
+void ball::ballDynamics() {
   for (int i{0}; i >= 0; i++) {
     float j = 0.f;
+    float h = 0.f;
+    float T = 0.f;
 
-    bool selectedMotion = this->selector();
+    bool selectedMotion = this->isColliding();
     sf::Vector2f impact;
     if (selectedMotion == 1) {
       ball toUpdate(m_x, m_y, m_m, m_direction);
-      toUpdate.updateXY();
+      toUpdate.collisionPosition();
       impact.x = toUpdate.getX();
       impact.y = toUpdate.getY();
     } else {
@@ -360,5 +360,36 @@ void ball::dynamics(float &h, float &T) {
   }
 }
 
- 
+sf::VertexArray ball::upperBound(){
+  sf::VertexArray vertexArray(sf::Lines, 2);  // 2 vertici per Lines
+    
+    vertexArray[0] = sf::Vertex(
+        sf::Vector2f(m_center.x, m_center.y - m_r1),
+        sf::Color::White
+    );
+    
+    vertexArray[1] = sf::Vertex(
+        sf::Vector2f(m_center.x + m_l, m_center.y - m_r2),
+        sf::Color::White
+    );
+    
+    return vertexArray;
+
+}
+sf::VertexArray ball::lowerBound(){
+  sf::VertexArray vertexArray(sf::Lines, 2);  // 2 vertici per Lines
+    
+    vertexArray[0] = sf::Vertex(
+        sf::Vector2f(m_center.x, m_center.y + m_r1),
+        sf::Color::White
+    );
+    
+    vertexArray[1] = sf::Vertex(
+        sf::Vector2f(m_center.x + m_l, m_center.y + m_r2),
+        sf::Color::White
+    );
+    
+    return vertexArray;
+
+}
        
