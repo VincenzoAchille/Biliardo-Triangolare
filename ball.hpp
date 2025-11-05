@@ -7,45 +7,45 @@
 #include <cmath>
 
 template <typename T>
-inline void rangeValidity(T value, T min, T max) {  
+inline void rangeValidity(T value, T min, T max) {
   if (std::isnan(value)) {
-        throw std::out_of_range("Value is NaN");
-    }
+    throw std::out_of_range("Value is NaN");
+  }
   if (value >= min && value <= max) {
     return;
   }
-  throw std::out_of_range("Value out of range" );
+  throw std::out_of_range("Value out of range");
 }
 
 template <typename T>
-inline void rangeValidity(T value, T min) { 
+inline void rangeValidity(T value, T min) {
   if (std::isnan(value)) {
-        throw std::out_of_range("Value is NaN");
-    }
+    throw std::out_of_range("Value is NaN");
+  }
   if (value > min) {
     return;
   }
   throw std::out_of_range("Value out of range");
 }
 
-inline float sgn(float x) { return static_cast<float>(x >= 0 ? 1 : -1); } //l'idea è che va anche se ci metto un double
+inline float sgn(float x) {
+  return static_cast<float>(x >= 0 ? 1 : -1);
+}  // l'idea è che va anche se ci metto un double
 inline float sgn(int x) { return static_cast<float>(x >= 0 ? 1 : -1); }
 
 class ball {
  public:
-  ball(float _x, float _y, float _m,
-       int _direction) {  
-    float maxY = std::max(m_r1, m_r2);
+  // TODO forse da fixare
+  ball(float _x, float _y, float _m, int _direction) {
+    const float maxY = std::max(m_r1, m_r2);
 
     rangeValidity(_x, -1.f, m_l + 1.f);
-    
+
     if (std::abs(_x) < 1e-3 && m_direction == 1) {
-      rangeValidity(_y, -m_r1 , m_r1);
+      rangeValidity(_y, -m_r1, m_r1);
     } else {
-      rangeValidity(_y, -maxY , maxY );
+      rangeValidity(_y, -maxY, maxY);
     }
-    
-  
 
     if (_direction != 1 && _direction != -1) {
       throw std::out_of_range("Value out of range");
@@ -61,11 +61,11 @@ class ball {
   ball(const ball &b)
       : m_x(b.m_x), m_y(b.m_y), m_m(b.m_m), m_direction(b.m_direction) {}
   // metodi
-  
+
   void ballDynamics();
   void ballDynamicsAnimated(
-                        
-                        float v);
+
+      float v);
   // setters
   static void r1(float _r1) {
     rangeValidity(_r1, 0.f, static_cast<float>(m_window.y) - m_center.y);
@@ -79,7 +79,8 @@ class ball {
     rangeValidity(_l, 0.f, static_cast<float>(m_window.x) - m_center.x);
     m_l = _l;
   }
-  static void radius(float _radius){
+  static void radius(float _radius) {
+    rangeValidity(_radius, 0.f);
     m_radius = _radius;
   }
 
@@ -95,7 +96,7 @@ class ball {
     m_window = _window;
   }
   // getters
-  static float getr1() { return m_r1; }  //posso chiamare questa r1?
+  static float getr1() { return m_r1; }  // posso chiamare questa r1?
   static float getr2() { return m_r2; }
   static float getl() { return m_l; }
   static float getErrorTolerance() { return m_errorTolerance; }
@@ -106,7 +107,7 @@ class ball {
   float getX() const { return m_x; }
   float getY() const { return m_y; }
   float getM() const { return m_m; }
-  int getDirection() const { return m_direction; } 
+  int getDirection() const { return m_direction; }
 
   // operazioni
   ball &operator=(const ball &b);
@@ -114,7 +115,7 @@ class ball {
   ~ball() {}
 
  private:
-  void collisionPosition();
+  void nextCollisionPosition();
   void updateDirection();
   float positionX(float t) const { return t; }
   float positionY(float t) const { return m_m * (t - m_x) + m_y; }

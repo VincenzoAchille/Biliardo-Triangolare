@@ -2,18 +2,17 @@
 #include <SFML/Window.hpp>
 #include <cmath>
 #include <iostream>
-#include "statisticsRoot.hpp"
-#include "ball.hpp"
 
+#include "ball.hpp"
+#include "statisticsRoot.hpp"
 
 int main() {
-  sf::Vector2f center(300, 450);
-  float r1{200};
-  float r2{100};
-  float l{1000};
-  float y0{-10.2696f};
-  float theta0{-0.574785f};
-  float animationSpeed{3};
+  const float r1{200};
+  const float r2{100};
+  const float l{1000};
+  const float y0{-10.2696f};
+  const float theta0{-0.574785f};
+  const float animationSpeed{3};
   ball::radius(10.f);
   /*std::cout << "inserisci i parametri per la forma del biliardo:" << '\n';
   std::cout << "r1 = ";
@@ -39,18 +38,19 @@ int main() {
     std::cin >> theta0;
     rangeValidity(theta0, -static_cast<float>(M_PI / 2),
                   static_cast<float>(M_PI / 2));*/
-    rangeValidity(theta0, -static_cast<float>(M_PI/2),static_cast<float>(M_PI/2));
-    float m = std::tan(theta0);
+    rangeValidity(theta0, -static_cast<float>(M_PI / 2),
+                  static_cast<float>(M_PI / 2));
+    const float m = std::tan(theta0);
     ball b1(0, y0, m);
-    b1.ballDynamicsAnimated(
-                        animationSpeed);
-    //std::cout << "yf = " << b1.getY() << "theta0 = " << std::atan(b1.getM()) << '\n';
+    b1.ballDynamicsAnimated(animationSpeed);
+    // std::cout << "yf = " << b1.getY() << "theta0 = " << std::atan(b1.getM())
+    // << '\n';
     b1.ballDynamics();
-    std::cout << "yf = " << b1.getY() << "theta0 = " << std::atan(b1.getM()) << '\n';
-    
+    std::cout << "yf = " << b1.getY() << "theta0 = " << std::atan(b1.getM())
+              << '\n';
 
   } else if (input == 2) {
-    int N{10000}; //sembrano non essere totalmente uguali le entries
+    int N{10000};  // sembrano non essere totalmente uguali le entries
     bool isDiscarted = false;
     float meanY0{0.};
     float meanTheta0{0.};
@@ -76,24 +76,23 @@ int main() {
     if (isDiscarted == 0) {
     } else {
     }*/
-    std::array<double,8> statisticalParamters = statistics(N,meanY0,stdY0,meanTheta0,stdTheta0,isDiscarted);
+    std::array<double, 8> statisticalParamters =
+        statistics(N, meanY0, stdY0, meanTheta0, stdTheta0, isDiscarted);
     std::cout << "i parametri richiesti sono:" << '\n';
-    std::array<std::string, 4> words = {" mean = ", " rms = ", " skewness = ", " kurtosis = "};
-    for(size_t i{0}; i < 4;i++){
+    std::array<std::string, 4> words = {
+        " mean = ", " rms = ", " skewness = ", " kurtosis = "};
+    for (size_t i{0}; i < 4; i++) {
       std::string histName = "yf";
-      std::cout << histName << words[i] << statisticalParamters[i]<< '\n';
+      std::cout << histName << words[i] << statisticalParamters[i] << '\n';
     }
-    std::cout << '\n'; 
-    for(size_t i{0}; i < 4;i++){
+    std::cout << '\n';
+    for (size_t i{0}; i < 4; i++) {
       std::string histName = "thetaf";
-      std::cout << histName << words[i] << statisticalParamters[i+4] << '\n';
+      std::cout << histName << words[i] << statisticalParamters[i + 4] << '\n';
     }
-
 
   } else {
-    std::cout << "errore nel tipo di simulazione scelta. Riprovare: " << '\n'
-              << "per un lancio singolo premere 1" << '\n'
-              << "per N lanci premere 2" << '\n';
-    std::cin >> input;
+    std::cout << "errore nel tipo di simulazione scelta.\n";
+    return 1;
   }
 }
