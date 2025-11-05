@@ -128,10 +128,17 @@ TEST_CASE("Controllo Costruttore" * doctest::skip()) {
   ball::r2(100.f);
   SUBCASE("controllo X") {
     float errorTolerance = ball::getErrorTolerance();
-    float valuesXnoThrow[8] = {0.f - errorTolerance,     0.01f - errorTolerance,    0.1f - errorTolerance,  100.f,
-                               1199.9f + errorTolerance, 1199.99f + errorTolerance, 1200.f + errorTolerance};
-    float valuesXThrow[6] = {-100,         -0.1f - errorTolerance,   -0.01f - errorTolerance,
-                             1200.01f + errorTolerance, 1200.1f + errorTolerance, 3000.f};
+    float valuesXnoThrow[8] = {
+        0.f - errorTolerance,     0.01f - errorTolerance,
+        0.1f - errorTolerance,    100.f,
+        1199.9f + errorTolerance, 1199.99f + errorTolerance,
+        1200.f + errorTolerance};
+    float valuesXThrow[6] = {-100,
+                             -0.1f - errorTolerance,
+                             -0.01f - errorTolerance,
+                             1200.01f + errorTolerance,
+                             1200.1f + errorTolerance,
+                             3000.f};
     for (int i{0}; i < 8; i++) {
       CAPTURE(valuesXnoThrow[i]);
       CHECK_NOTHROW(ball(valuesXnoThrow[i], 0., 0., 1));
@@ -143,10 +150,17 @@ TEST_CASE("Controllo Costruttore" * doctest::skip()) {
   }
   SUBCASE("controllo Y") {
     float errorTolerance = ball::getErrorTolerance();
-    float valuesYnoThrow[8] = {-200 - errorTolerance,   -199.9f - errorTolerance, -199.99f - errorTolerance, 0.f,
-                               199.9f + errorTolerance, 199.99f + errorTolerance, 200.f + errorTolerance};
-    float valuesYThrow[6] = {-400.f,      -200.1f - errorTolerance, -200.01f - errorTolerance,
-                             200.01f + errorTolerance, 200.1f + errorTolerance,  500.f};
+    float valuesYnoThrow[8] = {
+        -200 - errorTolerance,     -199.9f - errorTolerance,
+        -199.99f - errorTolerance, 0.f,
+        199.9f + errorTolerance,   199.99f + errorTolerance,
+        200.f + errorTolerance};
+    float valuesYThrow[6] = {-400.f,
+                             -200.1f - errorTolerance,
+                             -200.01f - errorTolerance,
+                             200.01f + errorTolerance,
+                             200.1f + errorTolerance,
+                             500.f};
     for (int i{0}; i < 8; i++) {
       CAPTURE(valuesYnoThrow[i]);
       CHECK_NOTHROW(ball(0., valuesYnoThrow[i], 0., 1));
@@ -223,7 +237,7 @@ TEST_CASE("Controllo Urti") {
     float finalTheta[6] = {1.2f, -1.2f, -0.3f, -0.3f, 0.5f, -0.5f};
 
     for (int i{0}; i < 6; i++) {
-      ball test(0., y0[i], std::tan(theta0[i]));
+      ball test(0.f, y0[i], std::tan(theta0[i]));
       test.ballDynamics();
       CAPTURE(y0[i]);
       CAPTURE(theta0[i]);
@@ -234,4 +248,4 @@ TEST_CASE("Controllo Urti") {
     }
   }
 }
-}
+}  // namespace biliard

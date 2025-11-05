@@ -1,14 +1,12 @@
 #ifndef BALL_HPP
 #define BALL_HPP
 
-
-
 #include <SFML/Graphics.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Window.hpp>
 #include <cmath>
 
-namespace biliard{
+namespace biliard {
 template <typename T>
 inline void rangeValidity(T value, T min, T max) {
   if (std::isnan(value)) {
@@ -41,8 +39,8 @@ class ball {
 
     rangeValidity(_x, -1.f, m_l + 1.f);
 
-    if (std::abs(_x) < 1e-3 && m_direction == 1) {
-      rangeValidity(_y, -m_r1, m_r1);
+    if (std::abs(_x) < 1e-3 && _direction == 1) {
+      rangeValidity(_y, -m_r1 + m_radius, m_r1 - m_radius);
     } else {
       rangeValidity(_y, -maxY, maxY);
     }
@@ -141,6 +139,6 @@ class ball {
   static sf::Vector2i m_window;
 };
 
-}
+}  // namespace biliard
 
 #endif

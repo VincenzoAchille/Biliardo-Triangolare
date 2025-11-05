@@ -8,13 +8,13 @@
 #include <cmath>
 #include <iostream>
 
-namespace biliard{
+namespace biliard {
 float ball::m_l = 1.f;
 float ball::m_r1 = 1.f;
 float ball::m_r2 = 1.f;
 sf::Vector2f ball::m_center(300, 450);
 sf::Vector2i ball::m_window(1600, 900);
-float ball::m_errorTolerance = 4.f;
+float ball::m_errorTolerance = 2.f;
 float ball::m_radius = 10.f;
 
 ball &ball::operator=(const ball &b) {
@@ -163,21 +163,17 @@ void ball::ballDynamicsAnimated(float animationSpeed) {
   circleShape.setPosition(m_center.x, m_center.y - m_y);
   circleShape.setFillColor(sf::Color::Cyan);
   while (true) {
-    std::cout << "entrato nel while esterno" << '\n';
     const bool collide = isColliding();
-   
+
     sf::Vector2f impactCoordinates;
     if (collide) {
-      
       ball toUpdate(*this);
-     
+
       toUpdate.nextCollisionPosition();
-      
 
       impactCoordinates.x = toUpdate.getX();
       impactCoordinates.y = toUpdate.getY();
     } else {
-    
       if (m_direction > 0) {
         impactCoordinates.x = m_l;
         impactCoordinates.y = positionY(m_l);
@@ -187,13 +183,11 @@ void ball::ballDynamicsAnimated(float animationSpeed) {
       }
     }
     if (m_direction < 0) {
-
       lastCollisionX = positionX;
       time = 0;
     }
-    std::cout << "finito while esterno" << '\n';
+
     while (window.isOpen()) {
-      std::cout << "entrato nel while interno" << '\n';
       if (m_direction > 0) {
         positionX = time;
       } else {
@@ -243,20 +237,18 @@ void ball::ballDynamicsAnimated(float animationSpeed) {
         finalCollision = std::abs(effectivePositionX - 0.) < m_errorTolerance &&
                          std::abs(newY - yFinalCollision) < m_errorTolerance;
       }
-      std::cout << "arrivato all'urto" << '\n';
-      std::cout << "isCollision vale: " << isCollision << '\n';
-      std::cout << "i valori di controllo sono:" << std::abs(effectivePositionX - m_l) << ", " <<std::abs(newY - yFinalCollision) << '\n';
-      if(std::abs(newY - yFinalCollision)> 1e7){
-        std::cout << "moto verticale" << '\n';
-        ball limitBall(0.f,0.f,0.f,0);
+
+      if (std::abs(newY - yFinalCollision) > 1e7) {
+        ball limitBall(0.f, 0.f, 0.f, 0);
+
         *this = limitBall;
         return;
-      } 
+      }
       if (collide && isCollision) {
-        std::cout << "ha urtato" << '\n';
-        std::cout << "X= " << m_x << " Y= " << m_y << '\n';
-        update(effectivePositionX, newY);
-         std::cout << "post update:" <<"X= " << m_x << " Y= " << m_y << '\n';
+        update(
+            impactCoordinates.x - sgn(m_direction) * m_radius * std::cos(angle),
+            impactCoordinates.y -
+                sgn(normal()) * sgn(m_r1 - m_r2) * m_radius * std::sin(angle));
 
         break;
       } else if (!collide && finalCollision) {
@@ -294,17 +286,18 @@ void ball::ballDynamicsAnimated(float animationSpeed) {
 }
 
 void ball::ballDynamics() {
-  float positionX = 0;
-  float lastCollisionX = 0;
+  float positionX = 0.f;
+  float lastCollisionX = 0.f;
 
- while(true) {
-    float time = 0;
+  while (true) {
+    float time = 0.f;
 
-    const bool collide = isColliding();  //const bool collide = this->isColliding();
+    const bool collide = isColliding();
     sf::Vector2f impactCoordinates;
     if (collide) {
       ball toUpdate(*this);
       toUpdate.nextCollisionPosition();
+
       impactCoordinates.x = toUpdate.getX();
       impactCoordinates.y = toUpdate.getY();
     } else {
@@ -313,14 +306,14 @@ void ball::ballDynamics() {
         impactCoordinates.y = positionY(m_l);
       } else {
         impactCoordinates.x = 0.f;
-        impactCoordinates.y = positionY(0);
+        impactCoordinates.y = positionY(0.f);
       }
     }
     if (m_direction < 0) {
       lastCollisionX = positionX;
       time = 0;
     }
-    
+
     while (true) {
       if (m_direction > 0) {
         positionX = time;
@@ -329,12 +322,12 @@ void ball::ballDynamics() {
       }
 
       const float angle = std::abs(std::atan(m_m));
-      const float newX = positionX *2;
+      const float newX = positionX;
       const float newY = positionY(newX);
       const float scale = 1.0f / std::sqrt(1 + m_m * m_m);
 
       bool isCollision = std::abs((newX + static_cast<float>(m_direction) *
-                                                   m_radius * std::cos(angle)) -
+                                              m_radius * std::cos(angle)) -
                                   impactCoordinates.x) < m_errorTolerance &&
                          std::abs((newY + sgn(normal()) * sgn(m_r1 - m_r2) *
                                               m_radius * std::sin(angle)) -
@@ -354,29 +347,28 @@ void ball::ballDynamics() {
         finalCollision = std::abs(newX - m_l) < m_errorTolerance &&
                          std::abs(newY - yFinalCollision) < m_errorTolerance;
       } else {
-        finalCollision = std::abs(newX- 0.) < m_errorTolerance &&
+        finalCollision = std::abs(newX - 0.) < m_errorTolerance &&
                          std::abs(newY - yFinalCollision) < m_errorTolerance;
       }
-      
-      if(std::abs(newY - yFinalCollision)> 1e7){
-        std::cout << "moto verticale" << '\n';
-        ball limitBall(0.f,0.f,0.f,0);
+
+      if (std::abs(newY - yFinalCollision) > 1e7) {
+        ball limitBall(0.f, 0.f, 0.f, 0);
         *this = limitBall;
         return;
-      } 
-      
-      
+      }
+
       if (collide && isCollision) {
-        update(newX, newY);
-        /*update(impactCoordinates.x - sgn(m_direction) * m_radius * std::cos(angle),
-               impactCoordinates.y - sgn(normal()) * sgn(m_r1 - m_r2) * m_radius *
-                              std::sin(angle));*/
+        update(
+            impactCoordinates.x - sgn(m_direction) * m_radius * std::cos(angle),
+            impactCoordinates.y -
+                sgn(normal()) * sgn(m_r1 - m_r2) * m_radius * std::sin(angle));
 
         break;
       } else if (!collide && finalCollision) {
         ball bTemp(xFinalCollision, yFinalCollision, m_m, m_direction);
 
         *this = bTemp;
+
         return;
       } else {
         time = time + scale;
@@ -397,7 +389,7 @@ sf::VertexArray ball::upperBound() {
   return vertexArray;
 }
 sf::VertexArray ball::lowerBound() {
-  sf::VertexArray vertexArray(sf::Lines, 2);  
+  sf::VertexArray vertexArray(sf::Lines, 2);
   vertexArray[0] =
       sf::Vertex(sf::Vector2f(m_center.x, m_center.y + m_r1), sf::Color::White);
 
@@ -406,4 +398,4 @@ sf::VertexArray ball::lowerBound() {
 
   return vertexArray;
 }
-}
+}  // namespace biliard

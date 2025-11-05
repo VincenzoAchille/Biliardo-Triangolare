@@ -9,7 +9,7 @@
 
 #include "ball.hpp"
 
-namespace biliard{
+namespace biliard {
 inline int calculateBins(int N) {
   int bins = static_cast<int>(std::sqrt(N));
   return bins;
@@ -18,8 +18,7 @@ inline int calculateBins(int N) {
 inline std::array<double, 9> statistics(int N, float meanY0, float stdY0,
                                         float meanTheta0, float stdTheta0,
                                         bool isDiscarded) {
-   
-  gRandom -> SetSeed(0);                                       
+  gRandom->SetSeed(0);
   rangeValidity(meanY0, -ball::getr1(), ball::getr1());
   rangeValidity(meanTheta0, -static_cast<float>(M_PI),
                 static_cast<float>(M_PI));
@@ -34,7 +33,8 @@ inline std::array<double, 9> statistics(int N, float meanY0, float stdY0,
   int verticalMotionCounter{0};
   while (i < N) {
     float y0Rand = static_cast<float>(gRandom->Gaus(meanY0, stdY0));
-    if ((y0Rand < -ball::getr1()) || (y0Rand > ball::getr1())) {
+    if ((y0Rand < (-ball::getr1() + ball::getRadius())) ||
+        (y0Rand > (ball::getr1() - ball::getRadius()))) {
       continue;
     }
     float theta0Rand = static_cast<float>(gRandom->Gaus(meanTheta0, stdTheta0));
@@ -43,24 +43,29 @@ inline std::array<double, 9> statistics(int N, float meanY0, float stdY0,
     }
     float m = std::tan(static_cast<float>(theta0Rand));
     ball randomBall(0.f, y0Rand, m);
-    
+
     randomBall.ballDynamics();
-    
+
     if (isDiscarded == true) {
-      if (randomBall.getDirection() == 1) { //da aggiustare questa condizione
+      if (randomBall.getDirection() != -1) {
+        if (randomBall.getDirection() != 0) {
+          yfHist.Fill(randomBall.getY());
+          float thetaf = std::atan(randomBall.getM());
+          thetafHist.Fill(thetaf);
+        } else {
+          verticalMotionCounter++;
+        }
+      }
+    } else {
+      if (randomBall.getDirection() != 0) {
         yfHist.Fill(randomBall.getY());
         float thetaf = std::atan(randomBall.getM());
         thetafHist.Fill(thetaf);
-      }
-    } else {
-      if(randomBall.getDirection() != 0){
-      yfHist.Fill(randomBall.getY());
-      float thetaf = std::atan(randomBall.getM());
-      thetafHist.Fill(thetaf);}
-      else{
+      } else {
         verticalMotionCounter++;
       }
     }
+
     i++;
   }
 
@@ -89,8 +94,15 @@ inline std::array<double, 9> statistics(int N, float meanY0, float stdY0,
   double thetafSkewness = thetafHist.GetSkewness();
   double thetafKurtosis = thetafHist.GetKurtosis();
   std::array<double, 9> statisticalParameter = {
-      yfMean,     yfRMS,     yfSkewness,     yfKurtosis,
-      thetafMean, thetafRMS, thetafSkewness, thetafKurtosis, static_cast<float>(verticalMotionCounter)};
+      yfMean,
+      yfRMS,
+      yfSkewness,
+      yfKurtosis,
+      thetafMean,
+      thetafRMS,
+      thetafSkewness,
+      thetafKurtosis,
+      static_cast<float>(verticalMotionCounter)};
   return statisticalParameter;
 }
-}
+}  // namespace biliard
