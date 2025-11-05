@@ -25,6 +25,7 @@ ball &ball::operator=(const ball &b) {
   return *this;
 }
 
+//è l'angolo tra la traietttoria e la normale al biliardo oltre il quale si ha l'inversione di direction
 float ball::alfaMax() const {
   return static_cast<float>(std::abs(atan(1 / normalModulus())));
 }
@@ -80,6 +81,7 @@ float ball::normal() const {
 
 void ball::updateM() {
   float newM;
+  //le rette possibili dalle equazioni sono 2. Una con lo stesso coefficiente angolare della incidente, l'altra con quello della riflessa
   if (std::abs(m_r1 - m_r2) < 1e-8) {
     m_m = -m_m;
 
@@ -106,6 +108,7 @@ float ball::angleWithNormal() const {
     float M = m_m;
     float b;
     if (1 + M * N == 0) {
+      //la seguente condizione per la geomteria del sistema non si dovrebbe verificare mai
       std::cout << "errore: 1+M*N == 0" << '\n';
       b = 0.f;
     } else {

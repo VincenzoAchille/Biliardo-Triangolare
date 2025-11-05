@@ -149,17 +149,17 @@ TEST_CASE("Controllo Costruttore" * doctest::skip()) {
     }
   }
   SUBCASE("controllo Y") {
-    float errorTolerance = ball::getErrorTolerance();
+    ball::radius(10.f);
     float valuesYnoThrow[8] = {
-        -200 - errorTolerance,     -199.9f - errorTolerance,
-        -199.99f - errorTolerance, 0.f,
-        199.9f + errorTolerance,   199.99f + errorTolerance,
-        200.f + errorTolerance};
+        -200 + ball::getRadius(),     -199.9f +ball::getRadius(),
+        -199.99f +ball::getRadius(), 0.f,
+        199.9f -ball::getRadius(),   199.99f -ball::getRadius(),
+        200.f -ball::getRadius()};
     float valuesYThrow[6] = {-400.f,
-                             -200.1f - errorTolerance,
-                             -200.01f - errorTolerance,
-                             200.01f + errorTolerance,
-                             200.1f + errorTolerance,
+                             -200.1f + ball::getRadius(),
+                             -200.01f + ball::getRadius(),
+                             200.01f - ball::getRadius(),
+                             200.1f - ball::getRadius(),
                              500.f};
     for (int i{0}; i < 8; i++) {
       CAPTURE(valuesYnoThrow[i]);

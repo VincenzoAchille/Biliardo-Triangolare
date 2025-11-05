@@ -12,7 +12,7 @@ int main() {
   float l{1000};
   float y0{0.f};        
   float theta0{0.f};  
-  const float animationSpeed{3};
+  const float animationSpeed{5};
   biliard::ball::radius(10.f);
   std::cout << "inserisci i parametri per la forma del biliardo:" << '\n';
   std::cout << "r1 = ";
@@ -63,11 +63,11 @@ int main() {
                  "sì, premere 1 altrimenti 0"
               << '\n';
     std::cin >> isDiscarted;
-    std::cout << "Inserire i parametri delle distribuzioni:" << '\n';
+    std::cout << "Inserire i parametri delle distribuzioni:" << '\n' << '\n';
     std::cout << "Angolo iniziale:" << '\n';
     std::cout << "Media:" << '\n';
     std::cin >> meanY0;
-    std::cout << "Deviazione Standard:" << '\n';
+    std::cout << "Deviazione Standard:" << '\n' << '\n';
     std::cin >> stdY0;
     std::cout << "Altezza iniziale:" << '\n';
     std::cout << "Media:" << '\n';
@@ -81,7 +81,7 @@ int main() {
         N, meanY0, stdY0, meanTheta0, stdTheta0, isDiscarted);
     std::cout << "i parametri richiesti sono:" << '\n';
     std::array<std::string, 4> words = {
-        " mean = ", " rms = ", " skewness = ", " kurtosis = "};
+        " media = ", " rms = ", " asimmetria = ", " curtosi = "};
     for (size_t i{0}; i < 4; i++) {
       std::string histName = "yf";
       std::cout << histName << words[i] << statisticalParameters[i] << '\n';
