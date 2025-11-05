@@ -39,7 +39,7 @@ find_package(ROOT COMPONENTS CONFIG REQUIRED)
 
 # dichiara un eseguibile chiamato "progetto", prodotto a partire dai file sorgente indicati
 # sostituire "progetto" con il nome del proprio eseguibile e i file sorgente con i propri (con nomi sensati!)
-add_executable(biliardo_triangolare main.cpp ball.cpp statisticsRoot.hpp) #sto compilando un hpp
+add_executable(biliardo_triangolare main.cpp ball.cpp) #sto compilando un hpp
 # nel caso si usi SFML. analogamente per eventuali altre librerie
 target_link_libraries(biliardo_triangolare PRIVATE sfml-graphics ROOT::Core ROOT::Hist ROOT::Gpad)
 
@@ -51,7 +51,7 @@ if (BUILD_TESTING)
 
   # aggiungi l'eseguibile progetto.t
   add_executable(test.t test.cpp ball.cpp)
-  target_link_libraries(test.t PRIVATE sfml-graphics)
+  target_link_libraries(test.t PRIVATE sfml-graphics  ROOT::Core ROOT::Hist ROOT::Gpad)
   # aggiungi l'eseguibile progetto.t alla lista dei test
   add_test(NAME test.t COMMAND test.t)
 

@@ -6,14 +6,16 @@
 #include "ball.hpp"
 #include "statisticsRoot.hpp"
 
+
+
 int main() {
   const float r1{200};
   const float r2{100};
   const float l{1000};
-  const float y0{-10.2696f};
-  const float theta0{-0.574785f};
-  const float animationSpeed{3};
-  ball::radius(10.f);
+  const float y0{2.99717f};
+  const float theta0{-0.574103f};
+  const float animationSpeed{4};
+  biliard::ball::radius(10.f);
   /*std::cout << "inserisci i parametri per la forma del biliardo:" << '\n';
   std::cout << "r1 = ";
   std::cin >> r1;
@@ -21,16 +23,16 @@ int main() {
   std::cin >> r2;
   std::cout << "l = ";
   std::cin >> l;*/
-  ball::r1(r1);
-  ball::r2(r2);
-  ball::l(l);
+  biliard::ball::r1(r1);
+  biliard::ball::r2(r2);
+  biliard::ball::l(l);
   std::cout << "selezionare il tipo di simulazione. " << '\n'
             << "per un lancio singolo premere 1" << '\n'
             << "per N lanci premere 2" << '\n';
-  int input;
-  std::cin >> input;
+  int selectedFunctionality;
+  std::cin >> selectedFunctionality;
 
-  if (input == 1) {
+  if (selectedFunctionality == 1) {
     /*std::cout << "Inserire i parametri della pallina:" << '\n';
     std::cout << "y0 = ";
     std::cin >> y0;
@@ -38,27 +40,30 @@ int main() {
     std::cin >> theta0;
     rangeValidity(theta0, -static_cast<float>(M_PI / 2),
                   static_cast<float>(M_PI / 2));*/
-    rangeValidity(theta0, -static_cast<float>(M_PI / 2),
-                  static_cast<float>(M_PI / 2));
+    /*rangeValidity(theta0, -static_cast<float>(M_PI / 2),
+                  static_cast<float>(M_PI / 2));*/
     const float m = std::tan(theta0);
-    ball b1(0, y0, m);
-    b1.ballDynamicsAnimated(animationSpeed);
-    // std::cout << "yf = " << b1.getY() << "theta0 = " << std::atan(b1.getM())
-    // << '\n';
-    b1.ballDynamics();
-    std::cout << "yf = " << b1.getY() << "theta0 = " << std::atan(b1.getM())
-              << '\n';
+    biliard::ball animatedBall(0, y0, m);
+    animatedBall.ballDynamicsAnimated(animationSpeed);
+    if(animatedBall.getDirection() == 0){
+      std::cout << "errore: moto verticale" << '\n';
+      return 0;
+    }
+    std::cout << "yf = " << animatedBall.getY() << "theta0 = " << std::atan(animatedBall.getM())
+             << '\n';
 
-  } else if (input == 2) {
-    int N{10000};  // sembrano non essere totalmente uguali le entries
+  } else if (selectedFunctionality == 2) {
+    int N{50};  
     bool isDiscarted = false;
-    float meanY0{0.};
-    float meanTheta0{0.};
-    float stdY0{10.};
+    float meanY0{0.f};
+    float meanTheta0{0.f};
+    float stdY0{10.f};
     float stdTheta0{0.2f};
-    /*std::cout << "Inserire il numero di tentativi:" << '\n';
+    std::cout << "Inserire il numero di tentativi:" << '\n';
     std::cin >> N;
-    std::cout << "Vuoi scartare le palline che rimbalzano verso sinistra? Se "
+    int seconds =static_cast<int>( 2.f * static_cast<float>(N) / (1e4));
+    std::cout << "il tempo di calcolo sarà indicativamente di: " << seconds / 60 << " min e " << seconds % 60 << " sec" << '\n';
+    /*std::cout << "Vuoi scartare le palline che rimbalzano verso sinistra? Se "
                  "sì, premere 1 altrimenti 0"
               << '\n';
     std::cin >> isDiscarted;
@@ -76,20 +81,21 @@ int main() {
     if (isDiscarted == 0) {
     } else {
     }*/
-    std::array<double, 8> statisticalParamters =
-        statistics(N, meanY0, stdY0, meanTheta0, stdTheta0, isDiscarted);
+    std::array<double, 9> statisticalParameters =
+        biliard::statistics(N, meanY0, stdY0, meanTheta0, stdTheta0, isDiscarted);
     std::cout << "i parametri richiesti sono:" << '\n';
     std::array<std::string, 4> words = {
         " mean = ", " rms = ", " skewness = ", " kurtosis = "};
     for (size_t i{0}; i < 4; i++) {
       std::string histName = "yf";
-      std::cout << histName << words[i] << statisticalParamters[i] << '\n';
+      std::cout << histName << words[i] << statisticalParameters[i] << '\n';
     }
     std::cout << '\n';
     for (size_t i{0}; i < 4; i++) {
       std::string histName = "thetaf";
-      std::cout << histName << words[i] << statisticalParamters[i + 4] << '\n';
+      std::cout << histName << words[i] << statisticalParameters[i + 4] << '\n' << '\n';
     }
+    std::cout << "sono stati trovati " << statisticalParameters[8] << " moti verticali" << '\n';
 
   } else {
     std::cout << "errore nel tipo di simulazione scelta.\n";

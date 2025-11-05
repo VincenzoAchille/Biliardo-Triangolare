@@ -1,11 +1,14 @@
 #ifndef BALL_HPP
 #define BALL_HPP
 
+
+
 #include <SFML/Graphics.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Window.hpp>
 #include <cmath>
 
+namespace biliard{
 template <typename T>
 inline void rangeValidity(T value, T min, T max) {
   if (std::isnan(value)) {
@@ -28,14 +31,11 @@ inline void rangeValidity(T value, T min) {
   throw std::out_of_range("Value out of range");
 }
 
-inline float sgn(float x) {
-  return static_cast<float>(x >= 0 ? 1 : -1);
-}  // l'idea è che va anche se ci metto un double
+inline float sgn(float x) { return static_cast<float>(x >= 0 ? 1 : -1); }
 inline float sgn(int x) { return static_cast<float>(x >= 0 ? 1 : -1); }
 
 class ball {
  public:
-  // TODO forse da fixare
   ball(float _x, float _y, float _m, int _direction) {
     const float maxY = std::max(m_r1, m_r2);
 
@@ -47,7 +47,7 @@ class ball {
       rangeValidity(_y, -maxY, maxY);
     }
 
-    if (_direction != 1 && _direction != -1) {
+    if (_direction != 1 && _direction != -1 && _direction != 0) {
       throw std::out_of_range("Value out of range");
     }
 
@@ -96,7 +96,7 @@ class ball {
     m_window = _window;
   }
   // getters
-  static float getr1() { return m_r1; }  // posso chiamare questa r1?
+  static float getr1() { return m_r1; }
   static float getr2() { return m_r2; }
   static float getl() { return m_l; }
   static float getErrorTolerance() { return m_errorTolerance; }
@@ -108,7 +108,6 @@ class ball {
   float getY() const { return m_y; }
   float getM() const { return m_m; }
   int getDirection() const { return m_direction; }
-
   // operazioni
   ball &operator=(const ball &b);
   // distruttori
@@ -141,5 +140,7 @@ class ball {
   static sf::Vector2f m_center;
   static sf::Vector2i m_window;
 };
+
+}
 
 #endif
